@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -10,4 +5,218 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+//////////////////////
+// ENUMS
+//////////////////////
+
+enum Budget {
+  BUDGET
+  MID
+  LUXURY
+}
+
+enum Vibe {
+  ADVENTURE
+  RELAXED
+  FOODIE
+  CULTURAL
+}
+
+enum ItineraryStatus {
+  QUEUED
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum TransactionReason {
+  PURCHASE
+  GENERATION
+  EXPORT
+  REFUND
+}
+
+enum SubscriptionPlan {
+  EXPLORER
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+}
+
+enum JobStatus {
+  QUEUED
+  ACTIVE
+  COMPLETED
+  FAILED
+}
+
+enum JobType {
+  ITINERARY
+  PDF_EXPORT
+}
+
+//////////////////////
+// MODELS
+//////////////////////
+
+model User {
+  id               String  @id @default(cuid())
+  email            String  @unique
+  name             String?
+  avatarUrl        String?
+  stripeCustomerId String?
+
+  createdAt DateTime @default(now())
+
+  // relations
+  credits       Credit?
+  transactions  CreditTransaction[]
+  itineraries   Itinerary[]
+  wishlistItems WishlistItem[]
+  subscription  Subscription?
+  jobs          Job[]
+  pdfExports    PdfExport[]
+}
+
+//////////////////////
+
+model Credit {
+  id      String @id @default(cuid())
+  userId  String @unique
+  balance Int    @default(0)
+
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+//////////////////////
+
+model CreditTransaction {
+  id          String            @id @default(cuid())
+  userId      String
+  amount      Int
+  reason      TransactionReason
+  referenceId String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+//////////////////////
+
+model Itinerary {
+  id     String @id @default(cuid())
+  userId String
+
+  destination String
+  days        Int
+  budget      Budget
+  vibe        Vibe
+
+  status ItineraryStatus @default(QUEUED)
+
+  data Json?
+
+  // ⭐ NEW FIELD
+  lastUsedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  pdfExports PdfExport[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+//////////////////////
+
+model WishlistItem {
+  id     String @id @default(cuid())
+  userId String
+
+  destination String
+  photoUrl    String
+
+  sortOrder Int
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+//////////////////////
+
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  stripeSubscriptionId String
+  plan                 SubscriptionPlan
+  status               SubscriptionStatus
+
+  currentPeriodEnd DateTime
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+//////////////////////
+// ⭐ NEW: JOBS TABLE
+//////////////////////
+
+model Job {
+  id        String   @id @default(cuid())
+  userId    String
+
+  type      JobType
+  status    JobStatus @default(QUEUED)
+
+  referenceId String? // itineraryId or pdfExportId
+
+  error     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+}
+
+//////////////////////
+// ⭐ NEW: PDF EXPORTS
+//////////////////////
+
+model PdfExport {
+  id          String   @id @default(cuid())
+  userId      String
+  itineraryId String
+
+  url         String?
+  status      JobStatus @default(QUEUED)
+
+  expiresAt   DateTime?
+
+  createdAt   DateTime @default(now())
+
+  user       User      @relation(fields: [userId], references: [id])
+  itinerary  Itinerary @relation(fields: [itineraryId], references: [id])
+
+  @@index([userId])
+  @@index([itineraryId])
 }
