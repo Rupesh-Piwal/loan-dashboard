@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 
+import { useCredits } from "@/hooks/useCredits";
+
 export default function DashboardPage() {
+  const credits = useCredits();
+
   return (
     <div className="max-w-5xl space-y-10">
       <header className="space-y-1">
@@ -39,7 +43,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground mb-1">Available Credits</p>
-              <h2 className="text-3xl font-bold font-sans">7</h2>
+              <h2 className="text-3xl font-bold font-sans">{credits ?? "..."}</h2>
             </div>
           </div>
 

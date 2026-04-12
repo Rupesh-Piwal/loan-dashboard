@@ -23,6 +23,8 @@ const vibes = [
   "Photography"
 ];
 
+import { generateItinerary } from "@/app/actions/itinerary";
+
 export default function NewItineraryPage() {
   const [budget, setBudget] = useState("Mid-Range");
   const [selectedVibes, setSelectedVibes] = useState<string[]>([]);
@@ -55,7 +57,7 @@ export default function NewItineraryPage() {
         </motion.p>
       </header>
 
-      <form className="space-y-10">
+      <form action={generateItinerary} className="space-y-10">
         <section className="space-y-6">
           <div className="space-y-3">
             <Label htmlFor="destination" className="text-sm font-medium ml-1">Destination</Label>
@@ -63,8 +65,10 @@ export default function NewItineraryPage() {
               <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input 
                 id="destination" 
+                name="destination"
                 placeholder="Santorini, Greece" 
                 className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl"
+                required
               />
             </div>
           </div>
@@ -75,9 +79,11 @@ export default function NewItineraryPage() {
               <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <Input 
                 id="duration" 
+                name="duration"
                 type="number"
                 placeholder="5" 
                 className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 transition-all rounded-2xl"
+                required
               />
             </div>
           </div>
@@ -85,6 +91,7 @@ export default function NewItineraryPage() {
 
         <section className="space-y-4">
           <Label className="text-sm font-medium ml-1">Budget</Label>
+          <input type="hidden" name="budget" value={budget} />
           <div className="flex p-1.5 bg-accent/20 rounded-2xl border border-border/50 glass">
             {budgets.map((b) => (
               <button
