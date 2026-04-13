@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { motion } from "framer-motion";
 import { 
   MapPin, 
   Clock, 
@@ -14,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 interface Activity {
   title: string;
@@ -35,9 +33,10 @@ interface ItineraryData {
   days: Day[];
 }
 
-export default async function ItineraryViewPage({ params }: { params: { id: string } }) {
+export default async function ItineraryViewPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
   const itinerary = await prisma.itinerary.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
   });
 
   if (!itinerary || !itinerary.data) {
