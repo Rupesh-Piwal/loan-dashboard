@@ -42,7 +42,7 @@ export async function POST(
     const host = req.headers.get("host");
     const protocol = host?.includes("localhost") ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
-    const targetUrl = `${baseUrl}/dashboard/itinerary/${itineraryId}`;
+    const targetUrl = `${baseUrl}/dashboard/itinerary/${itineraryId}/print`;
 
     let browser;
     try {
