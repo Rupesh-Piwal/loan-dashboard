@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import MapWrapper from "@/app/components/itinerary/map-wrapper";
+import ExportPdfButton from "@/app/components/itinerary/export-pdf-button";
 
 
 interface Activity {
@@ -56,7 +57,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
   return (
     <div className="max-w-6xl mx-auto pb-20">
       {/* Navigation Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 print:hidden">
         <Link href="/dashboard">
           <Button variant="ghost" className="rounded-full gap-2 text-muted-foreground hover:text-foreground">
             <ArrowLeft className="w-4 h-4" />
@@ -68,10 +69,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
             <Share2 className="w-4 h-4" />
             Share
           </Button>
-          <Button variant="outline" className="rounded-xl border-border/50 gap-2">
-            <Download className="w-4 h-4" />
-            Export PDF
-          </Button>
+          <ExportPdfButton itineraryId={resolvedParams.id} />
         </div>
       </div>
 
@@ -104,7 +102,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
       </section>
 
       {/* Interactive Map Section */}
-      <section id="interactive-map" className="mb-12 h-[450px] md:h-[550px] w-full rounded-3xl overflow-hidden scroll-mt-24 shadow-2xl border border-border/50 relative z-0">
+      <section id="interactive-map" className="mb-12 h-[450px] md:h-[550px] w-full rounded-3xl overflow-hidden scroll-mt-24 shadow-2xl border border-border/50 relative z-0 print:hidden">
         <MapWrapper days={data.days} />
       </section>
 
@@ -170,7 +168,7 @@ export default async function ItineraryViewPage({ params }: { params: Promise<{ 
         </div>
 
         {/* Sidebar: Navigation & Info */}
-        <aside className="space-y-8 hidden lg:block">
+        <aside className="space-y-8 hidden lg:block print:hidden">
           <div className="sticky top-24 space-y-6">
             <div className="bg-accent/20 backdrop-blur-md rounded-3xl border border-border/40 p-6 space-y-6">
               <h4 className="font-semibold text-lg">Trip Overview</h4>

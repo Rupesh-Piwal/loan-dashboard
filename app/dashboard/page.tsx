@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useCredits } from "@/hooks/useCredits";
 
 export default function DashboardPage() {
-  const credits = useCredits();
+  const { credits } = useCredits();
 
   return (
     <div className="max-w-5xl space-y-10">
