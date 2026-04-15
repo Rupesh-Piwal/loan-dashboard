@@ -8,13 +8,15 @@ import {
   CreditCard,
   Wallet,
   Plus,
-  Compass
+  Compass,
+  History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const sidebarLinks = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/history", label: "Trip History", icon: History },
   { href: "/dashboard/wishlist", label: "Wishlist", icon: Heart },
   { href: "/dashboard/credits", label: "Credits", icon: CreditCard },
   { href: "/dashboard/billing", label: "Billing", icon: Wallet },
