@@ -50,6 +50,8 @@ const TIME_BG_COLOR: Record<string, string> = {
 
 export default function AnimatedActivityCard({ activity, index }: ActivityProps) {
   const mapsUrl = activity.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.address)}` : null;
+  const cleanTitle = activity.title.includes('(') ? activity.title.split('(')[0].trim() : activity.title;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${cleanTitle}${activity.address ? `, ${activity.address}` : ''}`)}`;
   const emoji = CATEGORY_EMOJI[activity.category || "ACTIVITY"] || "📍";
   const mealEmoji = activity.mealType && activity.mealType !== "NONE" ? MEAL_EMOJI[activity.mealType] : null;
 
@@ -118,11 +120,19 @@ export default function AnimatedActivityCard({ activity, index }: ActivityProps)
 
           {/* Title & Subtitle — Large Fraunces Serif (Dominant) */}
           <div className="space-y-1">
-            <h3 className="text-3xl md:text-4xl font-serif text-zinc-950 leading-[1.1] tracking-tight">
-              {activity.title.includes('(') ? activity.title.split('(')[0].trim() : activity.title}
-            </h3>
+            <a 
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block group/title"
+              title="Get Directions on Google Maps"
+            >
+              <h3 className="text-3xl md:text-4xl font-serif text-zinc-950 leading-[1.1] tracking-tight group-hover/title:underline decoration-zinc-300 decoration-2 underline-offset-4">
+                {cleanTitle}
+              </h3>
+            </a>
             {activity.title.includes('(') && (
-              <p className="text-[13px] font-medium text-[#C4632C] uppercase tracking-[0.2em] font-sans italic opacity-80">
+              <p className="text-[13px] font-medium text-[#C4632C] uppercase tracking-[0.2em] font-sans italic opacity-80 mt-1">
                 {activity.title.split('(')[1].replace(')', '').trim()}
               </p>
             )}

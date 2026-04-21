@@ -5,6 +5,8 @@
  * and add it to your .env as UNSPLASH_ACCESS_KEY.
  */
 
+import { connection } from "@/lib/bull/connection";
+
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1488085061387-422e29b40080?q=80&w=2000&auto=format&fit=crop"; // More neutral premium travel image
 
 export async function fetchUnsplashImage(
@@ -19,7 +21,15 @@ export async function fetchUnsplashImage(
   }
 
   const tryFetch = async (q: string) => {
+    const cacheKey = `unsplash:image:${encodeURIComponent(q)}:${orientation}`;
+
     try {
+      // 1. Check Redis Cache
+      const cached = await connection.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+
       const response = await fetch(
         `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&orientation=${orientation}&per_page=1`,
         {
@@ -31,7 +41,14 @@ export async function fetchUnsplashImage(
 
       if (!response.ok) return null;
       const data = await response.json();
-      return (data.results && data.results.length > 0) ? data.results[0].urls.regular : null;
+      const url = (data.results && data.results.length > 0) ? data.results[0].urls.regular : null;
+
+      // 2. Cache in Redis (24 hours)
+      if (url) {
+        await connection.set(cacheKey, url, "EX", 86400);
+      }
+
+      return url;
     } catch (error) {
       console.error(`Error fetching image for ${q}:`, error);
       return null;

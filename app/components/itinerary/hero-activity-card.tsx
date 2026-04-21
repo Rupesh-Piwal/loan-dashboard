@@ -40,6 +40,8 @@ export default function HeroActivityCard({ activity }: { activity: Activity }) {
   const mapsUrl = activity.address
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activity.address)}`
     : null;
+  const cleanTitle = activity.title.includes('(') ? activity.title.split('(')[0].trim() : activity.title;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${cleanTitle}${activity.address ? `, ${activity.address}` : ''}`)}`;
   const emoji = CATEGORY_EMOJI[activity.category || "ACTIVITY"] || "📍";
   const mealEmoji = activity.mealType && activity.mealType !== "NONE" ? MEAL_EMOJI[activity.mealType] : null;
 
@@ -102,11 +104,19 @@ export default function HeroActivityCard({ activity }: { activity: Activity }) {
               {/* Title over the image — Fraunces Serif, evocative */}
               {/* Title over the image — Fraunces Serif, evocative */}
               <div className="space-y-1">
-                <h3 className="text-4xl md:text-6xl font-serif text-white leading-[1] tracking-tight max-w-4xl text-shadow-premium-black">
-                  {activity.title.includes('(') ? activity.title.split('(')[0].trim() : activity.title}
-                </h3>
+                <a 
+                  href={directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block group/title"
+                  title="Get Directions on Google Maps"
+                >
+                  <h3 className="text-4xl md:text-6xl font-serif text-white leading-[1] tracking-tight max-w-4xl text-shadow-premium-black group-hover/title:underline decoration-white/50 decoration-2 underline-offset-[6px]">
+                    {cleanTitle}
+                  </h3>
+                </a>
                 {activity.title.includes('(') && (
-                  <p className="text-sm md:text-base font-medium text-orange-400 uppercase tracking-[0.3em] font-sans italic opacity-90 text-shadow-premium-black">
+                  <p className="text-sm md:text-base font-medium text-orange-400 uppercase tracking-[0.3em] font-sans italic opacity-90 text-shadow-premium-black mt-1">
                     {activity.title.split('(')[1].replace(')', '').trim()}
                   </p>
                 )}
@@ -141,9 +151,17 @@ export default function HeroActivityCard({ activity }: { activity: Activity }) {
                 Featured Experience ✦
               </div>
             </div>
-            <h3 className="text-4xl md:text-5xl font-serif text-zinc-950 leading-[1] tracking-tight">
-              {activity.title}
-            </h3>
+            <a 
+              href={directionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block group/title"
+              title="Get Directions on Google Maps"
+            >
+              <h3 className="text-4xl md:text-5xl font-serif text-zinc-950 leading-[1] tracking-tight group-hover/title:underline decoration-zinc-300 decoration-2 underline-offset-[6px]">
+                {activity.title}
+              </h3>
+            </a>
           </div>
         )}
 
