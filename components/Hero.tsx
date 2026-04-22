@@ -94,7 +94,7 @@ export default function Hero() {
       {/* ════ FULL-SCREEN BACKGROUND IMAGES ════ */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {/* 🔹 Fallback image (instant render) */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           <motion.img
             key={idx}
             src={HERO_IMAGES[idx]}

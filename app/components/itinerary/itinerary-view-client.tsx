@@ -2,26 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-// import {
-//   MapPin,
-//   CalendarBlank,
-//   Sparkle,
-//   ArrowLeft,
-//   ArrowRight,
-//   ShareNetwork,
-//   X,
-//   Translate,
-//   Sun,
-//   Lightbulb,
-//   Buildings,
-//   ArrowSquareOut,
-//   CurrencyDollar,
-//   CaretDown,
-//   Compass,
-//   Route,
-//   Camera,
-//   ForkKnife,
-// } from "@phosphor-icons/react";
 import { MapPin, ArrowRight, Share, X, Languages, Sun, Building2, DollarSign, CircleChevronUp, Sparkle, ArrowDownToDot, Compass } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

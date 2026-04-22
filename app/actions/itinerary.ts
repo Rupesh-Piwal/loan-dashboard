@@ -5,11 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { deductCredits } from "@/lib/credits";
 
 
-import { generateItinerary as runGenerator } from "@/lib/itinerary/generateItinerary";
-import { Vibe, Budget, ItineraryStatus } from "../../generated/prisma/client";
-import { fetchUnsplashImage } from "@/lib/unsplash";
-
-import { addItineraryJob } from "@/lib/bull/itinerary-queue";
+import { initiateItineraryGeneration } from "@/lib/itinerary/service";
+import { Vibe, Budget } from "../../generated/prisma/client";
 
 export async function generateItinerary(formData: FormData) {
   const session = await auth();
@@ -44,26 +41,13 @@ export async function generateItinerary(formData: FormData) {
   const vibe = vibeMap[vibeStr] || Vibe.ADVENTURE;
 
   try {
-    // 1. Credit Deduction (Synchronous to ensure payment)
-    console.log("💳 Deducting credits...");
-    await deductCredits(userId, 1);
-
-    // 2. Create Placeholder Itinerary with QUEUED status
-    console.log("💾 Creating placeholder itinerary record...");
-    const itinerary = await prisma.itinerary.create({
-      data: {
-        userId,
-        destination,
-        days,
-        vibe,
-        budget,
-        status: ItineraryStatus.QUEUED,
-      },
+    const itinerary = await initiateItineraryGeneration({
+      userId,
+      destination,
+      days,
+      vibe,
+      budget,
     });
-
-    // 3. Add to BullMQ Queue
-    console.log("📨 Adding generation job to queue...");
-    await addItineraryJob(itinerary.id);
 
     return { success: true, id: itinerary.id };
   } catch (error: any) {
