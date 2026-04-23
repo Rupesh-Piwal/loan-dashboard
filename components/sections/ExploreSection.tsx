@@ -4,18 +4,21 @@ import DestinationsCarousel from "@/components/DestinationsCarousel";
 
 export default function ExploreSection() {
   return (
-    <section id="explore" className="bg-[#F5EFE0] py-[120px] overflow-hidden relative">
+    <section id="explore" className="bg-[#F5EFE0] py-[30px] md:py-[60px] overflow-hidden relative">
       <div className="max-w-[1240px] mx-auto relative z-10">
         {/* Heading */}
-        <div className="flex flex-col items-center text-center mb-16 px-6 max-w-[800px] mx-auto">
+        <div className="flex flex-col items-center text-center px-6 max-w-[900px] mx-auto">
 
-          <div className="text-[11px] font-serif  uppercase tracking-[0.25em] text-terracotta font-bold mb-4 italic">Collections</div>
-          <h2 className="font-serif italic font-medium text-[clamp(36px,5vw,60px)] text-navy leading-[1] tracking-tight mb-6">
-            Timeless <span className="text-terracotta">destinations</span>
+          {/* EXPLORE — smaller, wider, airy, italic, sexy tension */}
+          <div className="text-[20px] md:text-[40px] font-bold tracking-[0.6em] text-terracotta"
+            style={{ fontFamily: 'var(--font-dancing), cursive' }}>
+            Explore
+          </div>
+
+          {/* Headline — dramatic scale jump, ultra-light + bold contrast */}
+          <h2 className="text-[62px] md:text-[60px] font-semibold tracking-tight text-navy opacity-85">
+            Timeless destinations
           </h2>
-          <p className="font-sans text-[16px] text-navy/60 leading-relaxed font-medium">
-            Curated sanctuaries and vibrant metropolises, handpicked for the discerning traveler.
-          </p>
         </div>
 
         {/* Carousel */}

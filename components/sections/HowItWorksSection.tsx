@@ -18,7 +18,7 @@ export default function HowItWorksSection() {
           viewport={{ once: true }}
           className="inline-flex items-center justify-center px-5 py-1.5 mb-8 rounded-full border border-navy/10 bg-white/50 backdrop-blur-sm"
         >
-          <span className="text-[10px] font-sans text-navy/60 font-bold uppercase tracking-[0.2em]">
+          <span className="text-[10px] font-inter text-navy/60 font-bold uppercase tracking-[0.2em]">
             The Process
           </span>
         </motion.div>
@@ -33,7 +33,7 @@ export default function HowItWorksSection() {
           <h2 className="font-serif italic font-medium text-[clamp(32px,5vw,64px)] text-navy leading-[1.05] mb-6 tracking-tight">
             Crafting your <span className="text-terracotta">perfect</span> escape.
           </h2>
-          <p className="font-sans text-[16px] md:text-[20px] text-navy/60 max-w-[640px] mx-auto mb-20 leading-relaxed font-medium">
+          <p className="font-inter text-[16px] md:text-[20px] text-navy/60 max-w-[640px] mx-auto mb-20 leading-relaxed font-medium">
             Our meticulous generation process combines premium aesthetics with personalized travel intelligence.
           </p>
         </motion.div>

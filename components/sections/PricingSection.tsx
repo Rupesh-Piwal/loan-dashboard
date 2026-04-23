@@ -35,7 +35,11 @@ export default function PricingSection() {
     <section id="pricing" className="bg-[#F5EFE0] py-[160px] px-6 md:px-[8vw] relative overflow-hidden">
       <div className="max-w-[1240px] mx-auto relative z-10">
         <div className="text-center mb-24">
-          <div className="text-[11px] font-sans uppercase tracking-[0.25em] text-terracotta font-bold mb-5 italic">Memberships</div>
+          <div className="text-[20px] md:text-[40px] font-bold tracking-[0.6em] text-terracotta"
+            style={{ fontFamily: 'var(--font-dancing), cursive' }}>
+            Memberships
+          </div>
+
           <h2 className="font-serif italic font-medium text-[clamp(40px,5vw,72px)] text-navy leading-none tracking-tight">
             Invest in your <span className="text-terracotta">discoveries.</span>
           </h2>
@@ -47,8 +51,8 @@ export default function PricingSection() {
               key={tier.name}
               whileHover={{ y: -10 }}
               className={`group relative p-10 rounded-[40px] flex flex-col transition-all duration-500 ${tier.featured
-                  ? "bg-navy text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)] ring-1 ring-white/10"
-                  : "bg-white text-navy shadow-[0_20px_60px_rgba(15,25,35,0.03)] border border-navy/5"
+                ? "bg-navy text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)] ring-1 ring-white/10"
+                : "bg-white text-navy shadow-[0_20px_60px_rgba(15,25,35,0.03)] border border-navy/5"
                 }`}
             >
               {tier.featured && (
@@ -77,8 +81,8 @@ export default function PricingSection() {
               </div>
 
               <button className={`w-full py-5 rounded-[20px] font-sans text-[14px] font-bold tracking-widest uppercase transition-all duration-500 mt-auto ${tier.featured
-                  ? "bg-terracotta text-white hover:bg-terracotta/90"
-                  : "bg-navy text-sand hover:bg-navy/90"
+                ? "bg-terracotta text-white hover:bg-terracotta/90"
+                : "bg-navy text-sand hover:bg-navy/90"
                 }`}>
                 {tier.cta}
               </button>

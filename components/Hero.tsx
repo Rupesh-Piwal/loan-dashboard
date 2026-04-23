@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Calendar, Wallet, Compass, Loader2, MapPin } from "lucide-react";
@@ -30,6 +30,13 @@ export default function Hero() {
   //video state
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current && videoRef.current.readyState >= 3) {
+      setVideoLoaded(true);
+    }
+  }, []);
 
   // Form state
   const [destination, setDestination] = useState("");
@@ -98,6 +105,7 @@ export default function Hero() {
         {/* 🔹 Video layer (Cloudinary optimized) */}
         {!videoError && (
           <video
+            ref={videoRef}
             className={`absolute inset-0 w-full h-full object-cover 
       transition-opacity duration-1000 
       ${videoLoaded ? "opacity-100" : "opacity-0"}
@@ -108,12 +116,11 @@ export default function Hero() {
             playsInline
             preload="auto"
             poster={HERO_IMAGE_URL}
-            onLoadedData={() => {
-              setTimeout(() => setVideoLoaded(true), 150);
-            }}
+            onLoadedData={() => setVideoLoaded(true)}
+            onCanPlay={() => setVideoLoaded(true)}
             onError={() => setVideoError(true)}
           >
-            <source src={HERO_VIDEO_URL} type="video/mp4" />
+            <source src={HERO_VIDEO_URL} />
             {/* Fallback text */}
             Your browser does not support the video tag.
           </video>
@@ -146,7 +153,7 @@ export default function Hero() {
           className="max-w-4xl"
         >
           <h1 className="text-[62px] md:text-[100px] font-normal tracking-tight text-white font-[family-name:var(--font-serif)] italic">
-            Plan your <br />
+            Plan your <br />  
             <span className="text-white/60">perfect</span> journey
           </h1>
           <p className="font-bricolage text-[clamp(15px,1.1vw,18px)] text-white/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light">
@@ -160,14 +167,14 @@ export default function Hero() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.6 }}
-        className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-[1060px] dark"
+        className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-[1060px] px-3 dark"
       >
         <div className="bg-black/20 backdrop-blur-3xl border border-white/10 rounded-[28px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-wrap md:flex-nowrap items-center p-1.5 md:p-3 relative">
 
           {/* Destination */}
-          <div className="w-full md:flex-[1.4] flex items-center px-4 py-2.5 md:py-2 relative group cursor-text">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <MapPin className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
+          <div className="w-full md:flex-[1.4] flex items-center px-2 py-2.5 md:py-2 relative group cursor-text">
+            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <MapPin className="w-3 h-3 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1 w-full relative">
               <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
@@ -191,9 +198,9 @@ export default function Hero() {
           <div className="md:hidden h-px w-full bg-white/5 my-1" />
 
           {/* Days */}
-          <div className="w-1/2 md:flex-[0.8] flex items-center px-4 py-2 md:py-2 relative border-r border-white/5 md:border-none">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <Calendar className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
+          <div className="w-1/2 md:flex-[0.8] flex items-center px-2 py-2 md:py-2 relative border-r border-white/5 md:border-none">
+            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Calendar className="w-3 h-3 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1">
               <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
@@ -216,9 +223,9 @@ export default function Hero() {
           <div className="hidden md:block w-px h-10 bg-white/10 mx-2" />
 
           {/* Budget */}
-          <div className="w-1/2 md:flex-[1] flex items-center px-4 py-2 md:py-2 relative">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <Wallet className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
+          <div className="w-1/2 md:flex-[1] flex items-center px-2 py-2 md:py-2 relative">
+            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Wallet className="w-3 h-3 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1">
               <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
@@ -243,9 +250,9 @@ export default function Hero() {
           <div className="md:hidden h-px w-full bg-white/5 my-1" />
 
           {/* Vibe */}
-          <div className="w-1/2 md:flex-[1] flex items-center px-4 py-2 md:py-2 relative border-r border-white/5 md:border-none">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
-              <Compass className="w-4 h-4 md:w-5 md:h-5 text-white/70" />
+          <div className="w-1/2 md:flex-[1] flex items-center px-2 py-2 md:py-2 relative border-r border-white/5 md:border-none">
+            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Compass className="w-3 h-3 md:w-5 md:h-5 text-white/70" />
             </div>
             <div className="flex flex-col flex-1">
               <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/40 font-bold mb-0.5">
@@ -271,7 +278,7 @@ export default function Hero() {
             <button
               onClick={handleSubmit}
               disabled={isPending}
-              className="group relative overflow-hidden w-full md:w-[150px] h-[50px] md:h-[56px] rounded-xl md:rounded-full bg-gradient-to-br from-[#E67E22] to-[#C0392B] text-white flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 shadow-[0_8px_32px_rgba(197,99,45,0.4)] disabled:opacity-70"
+              className="group relative overflow-hidden w-[80%] mx-auto md:w-[150px] h-[40px] md:h-[56px] rounded-xl md:rounded-full bg-gradient-to-br from-[#E67E22] to-[#C0392B] text-white flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 shadow-[0_8px_32px_rgba(197,99,45,0.4)] disabled:opacity-70"
             >
               <div className="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 

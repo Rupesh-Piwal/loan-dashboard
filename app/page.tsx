@@ -15,7 +15,6 @@ export default function TravelPulseHome() {
         <Hero />
         <ExploreSection />
         <HowItWorksSection />
-        
         <TrustSection />
         <PdfExportSection />
         <PricingSection />

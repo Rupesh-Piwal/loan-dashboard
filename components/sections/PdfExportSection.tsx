@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function PdfExportSection() {
   return (
-    <section className="bg-navy py-[160px] px-6 md:px-[8vw] relative overflow-hidden">
+    <section className="bg-navy py-[60px] px-6 md:px-[8vw] relative overflow-hidden">
       <div className="max-w-[1240px] mx-auto flex flex-col items-center relative z-10">
         <div className="max-w-[800px] w-full text-center mb-24">
           <div className="text-[11px] font-sans uppercase tracking-[0.25em] text-terracotta font-bold mb-5 italic">The Export</div>
