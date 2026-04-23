@@ -152,11 +152,11 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="max-w-4xl"
         >
-          <h1 className="text-[62px] md:text-[100px] font-normal tracking-tight text-white font-[family-name:var(--font-serif)] italic">
-            Plan your <br />  
-            <span className="text-white/60">perfect</span> journey
+          <h1 className="text-[62px] md:text-[100px] font-normal tracking-tight text-white font-[family-name:var(--font-serif)] italic leading-[0.95] mb-10">
+            Plan your <br />
+            <span className="text-terracotta/70">perfect</span> journey
           </h1>
-          <p className="font-bricolage text-[clamp(15px,1.1vw,18px)] text-white/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light">
+          <p className="font-bricolage text-[clamp(15px,1.1vw,18px)] text-white/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light ">
             AI-powered luxury itineraries tailored to your vibe. Get curated guides, maps, and photos in seconds.
           </p>
         </motion.div>

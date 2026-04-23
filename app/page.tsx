@@ -3,7 +3,6 @@
 import Hero from "@/components/Hero";
 import ExploreSection from "@/components/sections/ExploreSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
-import TrustSection from "@/components/sections/TrustSection";
 import PdfExportSection from "@/components/sections/PdfExportSection";
 import PricingSection from "@/components/sections/PricingSection";
 import Footer from "@/components/Footer";
@@ -15,7 +14,6 @@ export default function TravelPulseHome() {
         <Hero />
         <ExploreSection />
         <HowItWorksSection />
-        <TrustSection />
         <PdfExportSection />
         <PricingSection />
       </main>
