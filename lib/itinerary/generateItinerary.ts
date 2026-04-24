@@ -28,7 +28,7 @@ const activitySchema = z.object({
   mealType: z.nativeEnum(MealType).describe("If this is a restaurant, which meal is it best for? Use NONE if not a restaurant."),
   cuisine: z.string().optional().describe("If this is a restaurant, what is the primary cuisine? e.g. 'Italian', 'Japanese', 'Street Food'"),
   rating: z.number().min(3.5).max(5).describe("Review rating (4.0-5.0). Be honest but prioritize high-quality spots."),
-  priceLevel: z.string().describe("Estimated price level ($, $$, $$$, $$$$)"),
+  aiInsight: z.string().describe("A highly specific, insider secret or reason why this location perfectly matches the user's requested vibe. Maximum 1-2 short sentences."),
   address: z.string().describe("Full street address of the location"),
   duration: z.string().describe("Recommended time to spend, e.g. '1.5 hours' or '45 mins'"),
   proTip: z.string().describe("A short insider tip that only a local would know — make it genuinely useful"),
@@ -84,7 +84,6 @@ export async function generateItinerary({
     vibe: a.vibe,
     category: a.category,
     rating: a.rating,
-    priceLevel: a.priceLevel,
   })) : [];
 
   // 3. Generate the structured itinerary using Gemini
@@ -115,6 +114,7 @@ export async function generateItinerary({
       10. Day Summary: Each day MUST have a 1-2 sentence summary and an estimated total cost range.
       11. Accommodation: Suggest 3-4 places to stay that match the ${budget} budget level. Include the neighborhood and nightly price range.
       12. Destination Intel: Provide travel tips, best time to visit, local currency with exchange rate, and primary language.
+      13. AI Insight: For every activity, provide a highly specific 'aiInsight'. This should be a fascinating insider secret, a 'what to order' tip, or a personalized explanation of why this spot matches the user's '${vibe}' vibe.
     `,
   });
 

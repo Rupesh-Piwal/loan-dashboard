@@ -110,7 +110,7 @@ function VibePanel({
       ([entry]) => {
         if (entry.isIntersecting) {
           onInView();
-          videoRef.current?.play().catch(() => {});
+          videoRef.current?.play().catch(() => { });
         } else {
           videoRef.current?.pause();
         }
@@ -145,7 +145,7 @@ function VibePanel({
         {showVideo ? (
           <video
             ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover scale-105"
+            className="absolute inset-0 md:max-w-[60%] h-full object-cover scale-105"
             muted
             loop
             playsInline
@@ -226,44 +226,11 @@ function VibePanel({
             {data.tagline}
           </motion.p>
 
-          {/* Mini itinerary preview */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={stagger(3)}
-            className="border-l border-sand/15 pl-5 md:pl-6 flex flex-col gap-3"
-          >
-            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-terracotta font-bold mb-1">
-              Sample Itinerary
-            </span>
-            {data.itinerary.map((item, i) => (
-              <motion.div
-                key={item}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 + i * 0.12 }}
-                className="flex items-center gap-3"
-              >
-                <span className="text-sand/20 font-serif italic text-sm">
-                  0{i + 1}
-                </span>
-                <span className="text-sand/60 text-[13px] md:text-[14px] font-inter font-medium">
-                  {item}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
+
         </div>
       </motion.div>
 
-      {/* ── Panel number (bottom-right) ── */}
-      <div className="absolute bottom-8 right-8 md:bottom-12 md:right-16 z-10 flex items-baseline gap-2">
-        <span className="text-sand/10 font-serif italic text-[80px] md:text-[120px] leading-none">
-          0{index + 1}
-        </span>
-      </div>
+
     </div>
   );
 }
@@ -284,9 +251,6 @@ export default function HowItWorksSection() {
     <section id="how-it-works" className="relative">
       {/* ═══════════════ INTRO PANEL ═══════════════ */}
       <div className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#060606]">
-        {/* Ambient glows */}
-        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-terracotta/5 rounded-full blur-[180px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-sand/5 rounded-full blur-[150px] pointer-events-none" />
 
         <div className="relative z-10 text-center px-6 max-w-[800px]">
           {/* Script accent */}
@@ -315,70 +279,12 @@ export default function HowItWorksSection() {
             <div className="h-[1px] bg-sand/15 flex-grow max-w-[120px] md:max-w-[200px] ml-4 md:ml-8" />
           </motion.div>
 
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.35 }}
-            className="text-sand/40 text-sm md:text-base max-w-[520px] mx-auto leading-relaxed font-inter"
-          >
-            Every journey starts with a feeling. Tell us your vibe — we
-            architect the perfect itinerary around it.
-          </motion.p>
-
-          {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.8 }}
-            className="mt-16 md:mt-24 flex flex-col items-center gap-3"
-          >
-            <span className="text-sand/20 text-[10px] uppercase tracking-[0.3em] font-bold">
-              Scroll to explore
-            </span>
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="w-5 h-8 rounded-full border border-sand/20 flex justify-center pt-1.5"
-            >
-              <div className="w-1 h-2 rounded-full bg-sand/40" />
-            </motion.div>
-          </motion.div>
         </div>
       </div>
 
       {/* ═══════════════ VIBE PANELS ═══════════════ */}
       <div ref={containerRef} className="relative">
-        {/* Floating vibe nav (desktop only) */}
-        <div className="hidden lg:block fixed right-8 top-1/2 -translate-y-1/2 z-50 mix-blend-difference">
-          <div className="flex flex-col items-center gap-5">
-            {vibeData.map((vibe, idx) => (
-              <button
-                key={vibe.vibe}
-                onClick={() => scrollToPanel(idx)}
-                className="group relative flex items-center"
-              >
-                {/* Label on hover */}
-                <span className="absolute right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] text-sand/70 uppercase tracking-[0.2em] font-bold whitespace-nowrap">
-                  {vibe.vibe}
-                </span>
-                <div
-                  className={`rounded-full transition-all duration-500 ${
-                    activeVibe === idx
-                      ? "w-3 h-3 bg-terracotta shadow-[0_0_14px_rgba(196,99,44,0.7)]"
-                      : "w-2 h-2 bg-sand/30 group-hover:bg-sand/60"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Panels */}
         {vibeData.map((vibe, idx) => (

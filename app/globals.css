@@ -199,6 +199,13 @@
   100% { transform: translateY(100%); }
 }
 
+/* Add this keyframe to your global CSS */
+@keyframes scrollPulse {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
 .animate-scroll-line {
   animation: scroll-line 2s infinite ease-in-out;
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Sans, Fraunces, Playfair_Display, Bricolage_Grotesque, Instrument_Serif, Dancing_Script, Great_Vibes } from "next/font/google";
+import { Euphoria_Script, Inter, DM_Sans, Fraunces, Playfair_Display, Bricolage_Grotesque, Instrument_Serif, Dancing_Script, Great_Vibes } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +37,12 @@ const greatVibes = Great_Vibes({
   weight: '400',
   subsets: ['latin'],
   variable: '--font-great-vibes',
+});
+
+const euphoria = Euphoria_Script({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-euphoria',
 });
 
 const dancingScript = Dancing_Script({
@@ -79,6 +85,7 @@ export default function RootLayout({
         bricolage_grotesque.variable,
         dancingScript.variable,
         instrument.variable,
+        euphoria.variable,
         "scrollbar-hide"
       )}
     >

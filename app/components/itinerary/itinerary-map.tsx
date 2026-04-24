@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
 import { Clock } from "@phosphor-icons/react";
@@ -40,7 +40,7 @@ const createCustomIcon = (dayNumber: number, isActive: boolean) => {
 
   return L.divIcon({
     className: "custom-leaflet-marker",
-    html: `<div class="flex items-center justify-center w-[${size}px] h-[${size}px] rounded-full ${bg} ${ring} border-2 border-zinc-950 ${text} font-black text-[10px] uppercase tracking-tighter shadow-2xl transition-all duration-700 origin-bottom transform hover:scale-110 active:scale-95 group">
+    html: `<div style="width: ${size}px; height: ${size}px;" class="flex items-center justify-center rounded-full ${bg} ${ring} border-2 border-zinc-950 ${text} font-black text-[10px] uppercase tracking-tighter shadow-2xl transition-all duration-700 origin-bottom transform hover:scale-110 active:scale-95 group">
       <div class="absolute inset-0 rounded-full ${isActive ? 'animate-ping opacity-20' : 'opacity-0'} bg-[#fca5a5]"></div>
       <span class="relative z-10">${dayNumber}</span>
     </div>`,
@@ -50,41 +50,23 @@ const createCustomIcon = (dayNumber: number, isActive: boolean) => {
   });
 };
 
-function FlyToDay({ days, activeDay }: { days: Day[]; activeDay: number | null }) {
+function FlyToActivity({ flatActivities, activeActivityIndex }: { flatActivities: any[]; activeActivityIndex: number | null }) {
   const map = useMap();
 
   useEffect(() => {
-    if (activeDay === null) return;
+    if (activeActivityIndex === null || !flatActivities || flatActivities.length === 0) return;
 
-    const day = days.find((d) => d.day === activeDay);
-    if (!day || !day.activities) return;
-
-    const validActivities = day.activities.filter(
-      (a) => isValidCoord(a.lat) && isValidCoord(a.lng)
-    );
-
-    if (validActivities.length === 0) return;
+    const activity = flatActivities[activeActivityIndex];
+    if (!activity || !isValidCoord(activity.lat) || !isValidCoord(activity.lng)) return;
 
     try {
-      if (validActivities.length === 1) {
-        const lat = Number(validActivities[0].lat);
-        const lng = Number(validActivities[0].lng);
-        map.flyTo([lat, lng], 14, { duration: 1.2 });
-      } else {
-        const coords = validActivities.map((a) => [Number(a.lat), Number(a.lng)] as [number, number]);
-        const bounds = L.latLngBounds(coords);
-        if (bounds.isValid()) {
-          const ne = bounds.getNorthEast();
-          const sw = bounds.getSouthWest();
-          if (isValidCoord(ne.lat) && isValidCoord(ne.lng) && isValidCoord(sw.lat) && isValidCoord(sw.lng)) {
-            map.flyToBounds(bounds, { padding: [60, 60], duration: 1.2 });
-          }
-        }
-      }
+      const lat = Number(activity.lat);
+      const lng = Number(activity.lng);
+      map.flyTo([lat, lng], 15, { duration: 1.5, easeLinearity: 0.25 });
     } catch (e) {
-      // Intentionally silent or minimal log
+      // Intentionally silent
     }
-  }, [activeDay, days, map]);
+  }, [activeActivityIndex, flatActivities, map]);
 
   return null;
 }
@@ -112,9 +94,13 @@ function BoundUpdater({ bounds }: { bounds: L.LatLngBounds }) {
 export default function ItineraryMap({
   days,
   activeDay,
+  flatActivities = [],
+  activeActivityIndex = null,
 }: {
   days: Day[];
   activeDay: number | null;
+  flatActivities?: any[];
+  activeActivityIndex?: number | null;
 }) {
   const [mounted, setMounted] = useState(false);
 
@@ -130,13 +116,10 @@ export default function ItineraryMap({
 
   if (!mounted) return <div className="h-full w-full bg-accent/20 animate-pulse rounded-3xl" />;
 
-  const activitiesWithDays = days.flatMap((day) =>
+  // If flatActivities is provided, use it, otherwise fall back to generating it from days
+  const validActivities = (flatActivities.length > 0 ? flatActivities : days.flatMap((day) =>
     (day.activities || []).map((activity) => ({ ...activity, dayNumber: day.day }))
-  );
-
-  const validActivities = activitiesWithDays.filter(
-    (a) => isValidCoord(a.lat) && isValidCoord(a.lng)
-  );
+  )).filter((a) => isValidCoord(a.lat) && isValidCoord(a.lng));
 
   const coords = validActivities.map((a) => [Number(a.lat), Number(a.lng)] as [number, number]);
   const bounds = coords.length > 0 ? L.latLngBounds(coords) : null;
@@ -163,13 +146,13 @@ export default function ItineraryMap({
           <BoundUpdater bounds={bounds} />
         )}
 
-        <FlyToDay days={days} activeDay={activeDay} />
+        <FlyToActivity flatActivities={validActivities} activeActivityIndex={activeActivityIndex} />
 
         {validActivities.map((activity, idx) => (
           <Marker
             key={idx}
             position={[Number(activity.lat), Number(activity.lng)]}
-            icon={createCustomIcon(activity.dayNumber, activeDay === activity.dayNumber)}
+            icon={createCustomIcon(activity.dayNumber || 1, activeActivityIndex === idx)}
           >
               <Popup className="premium-popup">
                 <div className="p-1 min-w-[200px]">
@@ -191,11 +174,6 @@ export default function ItineraryMap({
                         <span className="text-orange-500 text-xs">★</span>
                         {activity.rating.toFixed(1)}
                       </div>
-                    )}
-                    {activity.priceLevel && (
-                      <span className="text-[10px] font-black text-muted-foreground/60 tracking-wider">
-                        {activity.priceLevel}
-                      </span>
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

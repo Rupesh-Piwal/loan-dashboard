@@ -18,8 +18,10 @@ const MapComponent = dynamic(() => import("./itinerary-map"), {
 interface MapWrapperProps {
   days: any[];
   activeDay?: number | null;
+  flatActivities?: any[];
+  activeActivityIndex?: number | null;
 }
 
-export default function MapWrapper({ days, activeDay }: MapWrapperProps) {
-  return <MapComponent days={days} activeDay={activeDay ?? null} />;
+export default function MapWrapper({ days, activeDay, flatActivities, activeActivityIndex }: MapWrapperProps) {
+  return <MapComponent days={days} activeDay={activeDay ?? null} flatActivities={flatActivities} activeActivityIndex={activeActivityIndex ?? null} />;
 }

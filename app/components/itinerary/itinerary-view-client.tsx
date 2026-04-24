@@ -1,15 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { MapPin, ArrowRight, Share, X, Languages, Sun, Building2, DollarSign, CircleChevronUp, Sparkle, ArrowDownToDot, Compass } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import MapWrapper from "@/app/components/itinerary/map-wrapper";
 import ExportPdfButton from "@/app/components/itinerary/export-pdf-button";
-import AnimatedActivityCard from "@/app/components/itinerary/animated-activity-card";
-import HeroActivityCard from "@/app/components/itinerary/hero-activity-card";
-import TravelTransition from "@/app/components/itinerary/travel-transition";
+import { DayOpener, EditorialActivityScene } from "@/app/components/itinerary/cinematic-scenes";
 
 // ─── Interfaces ────────────────────────────────────────────────
 
@@ -233,64 +231,84 @@ function KnowBeforeYouGo({ data }: { data: ItineraryData }) {
 
 function WhereToStay({ stays, destination }: { stays?: SuggestedStay[]; destination: string }) {
   if (!stays || stays.length === 0) return null;
+
   const stayEmoji: Record<string, string> = {
     Hotel: "🏨", Hostel: "🏠", Boutique: "✨", Resort: "🌴", Airbnb: "🏡",
   };
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-20"
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-16"
     >
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <div className="w-1 h-1 rounded-full bg-orange-400" />
-          <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Reside</h2>
+      {/* Minimal header */}
+      <div className="flex items-center gap-3 mb-5">
+        <div className="h-px w-6 bg-gradient-to-r from-transparent to-orange-500/40" />
+        <div className="flex items-center gap-1.5">
+          <span className="text-[8px] font-black uppercase tracking-[0.3em] text-orange-400/80">✦</span>
+          <span className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-500">STAY</span>
+          <span className="text-[8px] font-black uppercase tracking-[0.3em] text-orange-400/80">✦</span>
         </div>
-        <div className="flex items-center gap-2 text-[9px] font-bold text-zinc-600 uppercase tracking-widest">
-          Scroll <ArrowRight className="w-3 h-3" />
-        </div>
+        <div className="h-px flex-1 bg-gradient-to-r from-orange-500/40 to-transparent" />
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-8 snap-x no-scrollbar -mx-4 px-4">
+      {/* Responsive grid – no scroll */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {stays.map((stay, i) => {
           const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(stay.name + " " + destination)}`;
           return (
             <motion.a
               key={i}
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.05, duration: 0.6 }}
+              transition={{ delay: i * 0.06, duration: 0.5 }}
               href={searchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-none w-[280px] snap-start group relative p-6 rounded-[1.75rem] bg-zinc-900/40 border border-white/5 hover:border-orange-400/20 transition-all duration-500"
+              className="group relative block rounded-xl bg-gradient-to-br from-zinc-900/60 to-zinc-950/80 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 transition-all duration-400 hover:shadow-xl hover:shadow-orange-500/5 overflow-hidden"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-zinc-800 border border-white/5 flex items-center justify-center text-lg">
-                  {stayEmoji[stay.type] || "🏨"}
+              {/* Decorative corner accent */}
+              <div className="absolute top-0 right-0 w-12 h-12 bg-orange-500/5 rounded-bl-2xl group-hover:bg-orange-500/10 transition-all duration-500" />
+
+              <div className="p-4">
+                {/* Top row: icon + type */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-800/80 border border-white/5 flex items-center justify-center text-base group-hover:scale-110 transition-transform duration-300">
+                      {stayEmoji[stay.type] || "🏨"}
+                    </div>
+                    <span className="text-[9px] font-black uppercase tracking-[0.15em] text-orange-400/80 bg-orange-400/5 px-2 py-0.5 rounded-full border border-orange-400/15">
+                      {stay.type}
+                    </span>
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-orange-500 transition-all duration-300">
+                    <ArrowRight className="w-3 h-3 text-white group-hover:text-black transition-colors" />
+                  </div>
                 </div>
-                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-orange-400/70 bg-orange-400/5 px-2 py-0.5 rounded-md border border-orange-400/10">{stay.type}</span>
-              </div>
 
-              <div className="space-y-1 mb-4">
-                <h3 className="text-xl font-serif italic text-white truncate group-hover:text-orange-400 transition-colors">
-                  {stay.name}
-                </h3>
-                <p className="text-[11px] text-zinc-500 font-medium truncate opacity-70">
-                  {stay.neighborhood}
-                </p>
-              </div>
+                {/* Name + neighborhood */}
+                <div className="mb-3">
+                  <h3 className="text-base font-bold text-white tracking-tight group-hover:text-orange-400 transition-colors truncate">
+                    {stay.name}
+                  </h3>
+                  <p className="text-[10px] text-zinc-500 font-medium mt-0.5 truncate">
+                    {stay.neighborhood}
+                  </p>
+                </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                <p className="text-sm font-bold text-white">
-                  {stay.priceRange}<span className="text-zinc-600 font-normal text-[10px] ml-1">/ nt</span>
-                </p>
-                <div className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white transition-all duration-500">
-                  <ArrowRight className="w-3 h-3 text-white group-hover:text-black transition-colors" />
+                {/* Price range - compact */}
+                <div className="flex items-baseline justify-between pt-2 border-t border-white/5">
+                  <div>
+                    <span className="text-sm font-bold text-white tracking-tight">{stay.priceRange}</span>
+                    <span className="text-[9px] text-zinc-600 ml-1">/ night</span>
+                  </div>
+                  <div className="text-[9px] text-zinc-600 uppercase tracking-wider">
+                    Book →
+                  </div>
                 </div>
               </div>
             </motion.a>
@@ -301,160 +319,45 @@ function WhereToStay({ stays, destination }: { stays?: SuggestedStay[]; destinat
   );
 }
 
-// ─── Parallax Day Card ─────────────────────────────────────────
-
-function ParallaxDayCard({
-  day, children, isLast, onPinDay, isActive,
-}: {
-  day: Day; children: React.ReactNode; isLast: boolean; onPinDay: () => void; isActive: boolean;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [40, -20]);
-
-  // Use the first activity's image as the Day Hero photo
-  const dayHeroImage = day.activities.find(a => a.image)?.image || null;
-
-  return (
-    <motion.section ref={ref} style={{ y }} id={`day-${day.day}`} className="scroll-mt-40 relative origin-top">
-
-      {/* ──── CINEMATIC DAY HERO ──── */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        className="relative overflow-hidden rounded-[2rem] mb-10"
-      >
-        {/* Hero Image */}
-        {dayHeroImage ? (
-          <div className="relative w-full aspect-[4/5] md:aspect-[3/2] min-h-[400px] max-h-[650px] overflow-hidden rounded-[2rem]">
-            <img
-              src={dayHeroImage}
-              alt={day.title}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
-
-            {/* Overlaid Chapter Info */}
-            <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 flex items-end justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="px-4 py-1.5 bg-white text-zinc-950 text-[10px] font-black uppercase tracking-[0.25em] rounded-xl shadow-lg">
-                    Day {day.day < 10 ? `0${day.day}` : day.day}
-                  </span>
-                  {day.estimatedCost && (
-                    <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/15 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl border border-white/20">
-                      <DollarSign className="w-3 h-3" />
-                      {day.estimatedCost}
-                    </span>
-                  )}
-                </div>
-                <h2 className="text-3xl md:text-5xl font-serif italic text-white leading-[1.05] tracking-tight max-w-xl text-shadow-premium-black">
-                  {day.title}
-                </h2>
-                {day.summary && (
-                  <p className="text-[14px] text-white/70 leading-relaxed max-w-md font-light">
-                    {day.summary}
-                  </p>
-                )}
-              </div>
-
-              <button
-                onClick={onPinDay}
-                className={`shrink-0 flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all duration-500 border shadow-sm ${isActive
-                  ? "bg-orange-500 text-white border-orange-500 shadow-lg shadow-orange-500/20"
-                  : "bg-white/10 text-white border-white/20 hover:bg-white/20 hover:border-white/40"
-                  }`}
-              >
-                <MapPin className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Map</span>
-              </button>
-            </div>
-          </div>
-        ) : (
-          /* Fallback: No image available */
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/5 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 via-black to-zinc-900" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-bl-full" />
-            <div className="relative p-8 md:p-12">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="px-4 py-1.5 bg-white text-black text-[10px] font-black uppercase tracking-[0.25em] rounded-xl shadow-lg">
-                    Day {day.day < 10 ? `0${day.day}` : day.day}
-                  </span>
-                  {day.estimatedCost && (
-                    <span className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/5 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl border border-white/10">
-                      <DollarSign className="w-3 h-3" />
-                      {day.estimatedCost}
-                    </span>
-                  )}
-                </div>
-                <h2 className="text-3xl md:text-5xl font-serif italic text-white leading-[1.05] tracking-tight">{day.title}</h2>
-                {day.summary && <p className="text-[14px] text-zinc-500 leading-relaxed max-w-lg font-light">{day.summary}</p>}
-              </div>
-            </div>
-          </div>
-        )}
-      </motion.div>
-
-      {/* ──── Activities ──── */}
-      <div className="space-y-2">{children}</div>
-
-      {/* ──── End-of-trip CTA ──── */}
-      {isLast && (
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-24 relative overflow-hidden rounded-[2rem] border border-zinc-800"
-        >
-          <div className="absolute inset-0 bg-zinc-950" />
-          <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-gradient-to-bl from-orange-500/15 via-orange-500/5 to-transparent rounded-bl-full" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-violet-500/10 to-transparent rounded-tr-full" />
-          <div className="relative z-10 p-12 md:p-20 space-y-8 max-w-lg">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-500/10 flex items-center justify-center border border-orange-500/20"
-            >
-              <Sparkle className="w-7 h-7 text-orange-400" />
-            </motion.div>
-            <h3 className="text-4xl md:text-5xl font-serif text-white leading-[1.1] tracking-tight">Your story<br />is ready to begin.</h3>
-            <p className="text-zinc-500 text-[15px] leading-relaxed max-w-md">Download this curated experience for offline access. Every moment has been carefully crafted.</p>
-            <div className="flex items-center gap-4 pt-2">
-              <Button className="h-14 px-10 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-2xl font-bold uppercase text-[11px] tracking-[0.2em] shadow-xl shadow-orange-500/25 transition-all duration-500 active:scale-[0.97]">
-                Download Itinerary
-              </Button>
-              <div className="scale-90"><ExportPdfButton itineraryId="" /></div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </motion.section>
-  );
-}
-
 // ─── Main Component ────────────────────────────────────────────
 
-
-
 export default function ItineraryViewClient({ itinerary, data, heroImage }: ItineraryViewClientProps) {
+  const [activeActivityIndex, setActiveActivityIndex] = useState<number | null>(null);
   const [activeDay, setActiveDay] = useState<number | null>(null);         // for map
   const [activeScrollDay, setActiveScrollDay] = useState<number | null>(null); // for sticky nav
   const [scrolled, setScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // ── Compute trip stats ──
-  const totalActivities = data.days.reduce((sum, d) => sum + d.activities.length, 0);
-  const totalRestaurants = data.days.reduce((sum, d) => sum + d.activities.filter(a => a.category === "RESTAURANT").length, 0);
-  const totalExperiences = data.days.reduce((sum, d) => sum + d.activities.filter(a => a.category === "LANDMARK" || a.category === "ACTIVITY").length, 0);
+  // ── Scroll-linked Hero Animations ──
+  const { scrollY } = useScroll({ container: scrollContainerRef });
+  const heroScale = useTransform(scrollY, [0, 500], [1, 1.15]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.4]);
+  const textY = useTransform(scrollY, [0, 400], [0, -60]);
+  const textOpacity = useTransform(scrollY, [0, 300], [1, 0]);
 
+  const smoothHeroScale = useSpring(heroScale, { damping: 20, stiffness: 100 });
+  const smoothTextY = useSpring(textY, { damping: 20, stiffness: 100 });
 
+  const flatActivities = useMemo(() => {
+    const arr: (Activity & { dayNumber: number })[] = [];
+    data.days.forEach(day => {
+      day.activities.forEach(act => {
+        arr.push({ ...act, dayNumber: day.day });
+      });
+    });
+    return arr;
+  }, [data.days]);
+
+  // Sync activeDay with activeActivityIndex
+  useEffect(() => {
+    if (activeActivityIndex !== null && flatActivities[activeActivityIndex]) {
+      const dayNum = flatActivities[activeActivityIndex].dayNumber;
+      if (dayNum !== activeDay) {
+        setActiveDay(dayNum);
+        setActiveScrollDay(dayNum);
+      }
+    }
+  }, [activeActivityIndex, flatActivities, activeDay]);
 
   // ── Scroll spy ──
   useEffect(() => {
@@ -472,122 +375,134 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
         }
       }
       if (found !== activeScrollDay) setActiveScrollDay(found);
-      if (found && found !== activeDay) setActiveDay(found);
     };
     container.addEventListener("scroll", handleScroll, { passive: true });
     return () => container.removeEventListener("scroll", handleScroll);
-  }, [activeScrollDay, activeDay, data.days]);
+  }, [activeScrollDay, data.days]);
 
   return (
     <div
       ref={scrollContainerRef}
       className="fixed inset-0 z-[100] flex flex-col bg-black overflow-y-auto overflow-x-hidden font-sans selection:bg-orange-200/40 scrollbar-hide"
     >
-
       {/* ══════════════════════════════ STICKY DAY NAVIGATOR */}
       <StickyDayNav days={data.days} activeScrollDay={activeScrollDay} />
 
-      {/* ══════════════════════════════ VALORA GLASS HERO ══════════════════════════════ */}
-      <section className="relative h-screen w-full min-h-[800px] flex items-center justify-center overflow-hidden bg-zinc-950">
-
-        {/* Cinematic Background Layer */}
-        <div className="absolute inset-0 z-0">
+      {/* ══════════════════════════════ CINEMATIC HERO ══════════════════════════════ */}
+      <section className="relative h-screen w-full min-h-[900px] flex flex-col justify-end overflow-hidden bg-black">
+        {/* === LUXURY BACKGROUND LAYER === */}
+        <motion.div
+          style={{ scale: smoothHeroScale, opacity: heroOpacity }}
+          className="absolute inset-0 z-0"
+        >
           <motion.img
-            initial={{ scale: 1.2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 3, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ scale: 1 }}
+            animate={{ scale: 1.08 }}
+            transition={{ duration: 25, ease: [0.25, 0.1, 0.15, 1] }}
             src={heroImage}
             alt={itinerary.destination}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover will-change-transform"
           />
-          {/* Multi-layered Gradients for Premium feel without blurs */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-black/90 z-10" />
-          <div className="absolute inset-0 bg-black/10 z-10" />
-        </div>
 
-        {/* Edge-to-Edge Content Container */}
-        <div className="relative z-20 w-full h-full flex flex-col items-center justify-between p-12 md:p-20">
+          {/* Cinematic vignette + color grade */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_70%)] opacity-60 z-10" />
 
-          {/* Integrated Minimalist Header */}
-          <div className="w-full flex items-center justify-between">
+          {/* Warm light leak from bottom right */}
+          <div className="absolute bottom-0 right-0 w-[40vw] h-[40vh] bg-gradient-to-tl from-amber-500/15 via-orange-500/5 to-transparent rounded-full blur-[100px] z-10 pointer-events-none" />
 
-
-            <div className="absolute left-1/2 -translate-x-1/2 scale-125">
-              <span className="text-2xl font-serif italic text-white tracking-[0.3em] font-light">NOMADGO</span>
-            </div>
-          </div>
-
-          {/* Hero Typography - MAGAZINE STYLE */}
-          <div className="max-w-6xl w-full text-center space-y-12">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-              className="space-y-6"
-            >
-              <div className="flex items-center justify-center gap-6 mb-4">
-                <div className="h-px w-12 bg-white/30" />
-                <span className="text-[11px] font-black uppercase tracking-[0.6em] text-orange-400 drop-shadow-lg">Now Discovering</span>
-                <div className="h-px w-12 bg-white/30" />
-              </div>
-
-              <h1 className="text-8xl md:text-[12rem] font-serif italic text-white leading-[0.85] tracking-tighter text-shadow-premium-black">
-                {itinerary.destination.split(",")[0]}
-              </h1>
-
-              <div className="relative inline-block mt-4">
-                <h2 className="text-4xl md:text-6xl font-serif text-white/90 leading-tight tracking-tight text-shadow-premium-black">
-                  A {itinerary.vibe} <span className="italic font-light opacity-60">Odyssey</span>
-                </h2>
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Luxury Information Bar */}
-          <div className="w-full max-w-7xl flex flex-col md:flex-row items-end md:items-center justify-between gap-12 pb-4">
-            <div className="flex items-center gap-16 md:gap-24">
-              <div className="space-y-4 group">
-              </div>
-            </div>
-
-            <div className="flex items-center gap-12">
-              <div className="flex flex-col items-end">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-black text-white leading-none tracking-tighter">
-                    <AnimatedCounter to={itinerary.days} />
-                  </span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-400">Days</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll indicator with no blur */}
-        <motion.div
-          animate={{ y: [0, 15, 0] }}
-          transition={{ repeat: Infinity, duration: 2.5 }}
-          className="absolute bottom-6 right-1/2 translate-x-1/2 z-30 opacity-40"
-        >
-          <div className="w-px h-12 bg-gradient-to-b from-white via-white to-transparent" />
+          {/* Subtle grain texture for analog luxury feel */}
+          <div className="absolute inset-0 opacity-20 mix-blend-overlay pointer-events-none z-10"
+            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '200px' }} />
         </motion.div>
+
+        {/* === CONTENT CONTAINER === */}
+        <div className="relative z-20 w-full px-6 md:px-12 lg:px-20 xl:px-28 pb-20 md:pb-48 flex flex-col-reverse md:flex-row items-start md:items-end justify-between gap-10 md:gap-20">
+
+          {/* LEFT: Journey Chip – now a minimalist luxury badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="group relative flex items-center gap-4 px-5 py-3 rounded-full bg-black/30 backdrop-blur-2xl border border-white/15 shadow-2xl hover:border-amber-400/40 transition-all duration-700"
+          >
+            {/* Animated border glow on hover */}
+            <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-r from-amber-400/20 to-orange-500/20 blur-xl" />
+
+            <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-600/10 flex items-center justify-center border border-amber-400/30 shadow-[0_0_25px_rgba(245,158,11,0.2)] group-hover:shadow-[0_0_35px_rgba(245,158,11,0.4)] transition-all duration-500">
+              <span className="text-xl font-serif font-light text-amber-200 tracking-tighter">
+                <AnimatedCounter to={itinerary.days} />
+              </span>
+            </div>
+
+            <div className="flex flex-col">
+              <span className="md:text-[14px] font-semibold uppercase tracking-[0.25em] text-terracotta">Days</span>
+
+            </div>
+          </motion.div>
+
+          {/* RIGHT: Main typography – sensual & powerful */}
+          <div className="flex flex-col items-start md:items-end text-left md:text-right max-w-4xl w-full">
+            <motion.h1
+              initial={{ opacity: 0, y: 35 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-7xl md:text-9xl lg:text-[9rem] xl:text-[11rem] font-serif font-medium text-white leading-[0.85] tracking-[-0.02em] drop-shadow-2xl mb-6 relative"
+            >
+              {itinerary.destination.split(",")[0]}
+              {/* Elegant underline that appears on hover */}
+              <span className="absolute -bottom-4 left-0 md:left-auto md:right-0 w-0 h-[2px] bg-gradient-to-r from-amber-400 to-orange-500 group-hover:w-full transition-all duration-1000 ease-out" />
+            </motion.h1>
+
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 0.55, duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
+              className="w-24 h-[1.5px] bg-gradient-to-r from-amber-400 to-transparent mb-5 origin-left md:origin-right md:bg-gradient-to-l"
+            />
+
+            <motion.p
+              initial={{ opacity: 0, y: 25 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.75, duration: 0.9 }}
+              className="text-amber-400/90 italic text-2xl md:text-5xl lg:text-6xl tracking-wide font-light lowercase"
+              style={{ fontFamily: 'var(--font-euphoria)' }}
+            >
+              {itinerary.vibe}
+            </motion.p>
+          </div>
+        </div>
+
+        {/* === LUXURY SCROLL INDICATOR – refined, minimal, kinetic === */}
+        <motion.div
+          animate={{ y: [0, 12, 0] }}
+          transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+          onClick={() => scrollContainerRef.current?.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 cursor-pointer group flex flex-col items-center gap-2"
+        >
+          <span className="text-[9px] font-semibold uppercase tracking-[0.4em] text-white/40 group-hover:text-white/80 transition-colors duration-300">Scroll</span>
+          <div className="relative w-px h-14 overflow-hidden">
+            <div className="absolute w-full h-full bg-gradient-to-b from-amber-400/0 via-amber-400/70 to-amber-400/0 animate-[scrollPulse_2.2s_ease-in-out_infinite]" />
+            <div className="w-full h-full bg-white/20" />
+          </div>
+          <div className="w-1 h-1 rounded-full bg-amber-400/60 group-hover:bg-amber-400 transition-colors duration-300" />
+        </motion.div>
+
+
       </section>
 
 
+
       {/* ══════════════════════════════ CONTENT AREA */}
-      <div className="flex-1 max-w-[1400px] mx-auto w-full">
-        <div className="flex flex-col lg:flex-row">
-
+      <div className="flex-1 w-full relative">
+        <div className="flex flex-col lg:flex-row w-full">
           {/* LEFT: Scrollable Content */}
-          <div className="w-full lg:w-[62%] px-6 md:px-12 lg:px-16 pt-0 pb-32">
-
-            {/* ADVENZO STYLE SECTION HEADER */}
+          <div className="w-full lg:w-[60%] xl:w-[65%] px-6 md:px-12 lg:pl-[max(4rem,calc(50vw-650px))] lg:pr-20 pt-0 pb-32">
             <div className="mb-20 space-y-6">
-              <h2 className="text-4xl md:text-6xl font-serif italic tracking-tight text-white leading-none">
-                Explore Unmissable <br />
-                <span className="text-orange-400 font-sans font-black not-italic text-3xl md:text-4xl uppercase tracking-[0.1em]">Experience Tailored for you</span>
-              </h2>
+              <div className="text-[20px] md:text-[40px] font-bold tracking-[0.2em] text-terracotta"
+                style={{ fontFamily: 'var(--font-dancing), cursive' }}>
+                Explore unmissable
+              </div>
               <div className="max-w-xl">
                 <p className="text-zinc-500 font-light text-lg leading-relaxed">
                   Discover exclusive activities and hidden gems curated specifically for your <span className="text-white font-medium italic">{itinerary.vibe.toLowerCase()}</span> vibe.
@@ -599,42 +514,72 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
             <KnowBeforeYouGo data={data} />
             <WhereToStay stays={data.suggestedStays} destination={itinerary.destination} />
 
-            {/* Day Cards */}
-            <div className="space-y-32">
-              {data.days.map((day, dayIndex) => (
-                <ParallaxDayCard
-                  key={day.day}
-                  day={day}
-                  isLast={dayIndex === data.days.length - 1}
-                  isActive={activeDay === day.day}
-                  onPinDay={() => setActiveDay((prev) => (prev === day.day ? null : day.day))}
-                >
-                  {day.activities.map((activity, actIndex) => (
-                    <div key={actIndex} data-activity-lat={activity.lat} data-activity-lng={activity.lng}>
-                      {activity.travelFromPrevious && (
-                        <TravelTransition
-                          mode={activity.travelFromPrevious.mode}
-                          duration={activity.travelFromPrevious.duration}
-                          distance={activity.travelFromPrevious.distance}
-                        />
-                      )}
-                      {actIndex === 0 ? (
-                        <HeroActivityCard activity={activity} />
-                      ) : (
-                        <AnimatedActivityCard activity={activity} index={actIndex} />
-                      )}
-                    </div>
-                  ))}
-                </ParallaxDayCard>
-              ))}
+            <div className="space-y-0">
+              {flatActivities.map((activity, index) => {
+                const isFirstActivityOfDay = flatActivities.findIndex(a => a.dayNumber === activity.dayNumber) === index;
+                const isLast = index === flatActivities.length - 1;
+                const dayData = data.days.find(d => d.day === activity.dayNumber);
+
+                const aligns: ("left" | "right" | "wide")[] = ["left", "right", "wide", "left", "right"];
+                const align = aligns[index % aligns.length];
+
+                return (
+                  <div key={`${activity.dayNumber}-${index}`} data-activity-lat={activity.lat} data-activity-lng={activity.lng} id={`day-${activity.dayNumber}`}>
+                    
+                    {isFirstActivityOfDay && dayData && (
+                      <DayOpener 
+                        dayInfo={{ dayTitle: dayData.title, dayNumber: dayData.day, summary: dayData.summary }}
+                        image={activity.image}
+                      />
+                    )}
+
+                    <EditorialActivityScene 
+                      activity={activity} 
+                      index={index} 
+                      onInView={setActiveActivityIndex} 
+                      align={align}
+                      isLast={isLast}
+                    />
+
+                    {isLast && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                        className="mt-32 pt-32 pb-16 flex flex-col items-center text-center relative"
+                      >
+                        <div className="w-px h-24 bg-gradient-to-b from-white/10 to-transparent absolute top-0 left-1/2 -translate-x-1/2" />
+                        
+                        <span className="text-[12px] font-black uppercase tracking-[0.4em] text-orange-400 mb-6">
+                          Epilogue
+                        </span>
+                        
+                        <h3 className="text-5xl md:text-7xl font-serif text-white leading-[1.1] tracking-tight mb-6">
+                          Your story is<br />ready to begin.
+                        </h3>
+                        
+                        <p className="text-zinc-400 text-lg font-light leading-relaxed max-w-md mx-auto mb-10">
+                          Download this curated experience for offline access. Every moment has been carefully crafted.
+                        </p>
+                        
+                        <div className="flex items-center justify-center">
+                          <div className="scale-100 transform origin-center shadow-[0_0_40px_rgba(245,158,11,0.1)] hover:shadow-[0_0_60px_rgba(245,158,11,0.2)] transition-shadow duration-700 rounded-full">
+                            <ExportPdfButton itineraryId="" />
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* RIGHT: Sticky Map */}
-          <div className="hidden lg:block lg:w-[38%] border-l border-white/5">
+          <div className="hidden lg:block lg:w-[40%] xl:w-[35%] border-l border-white/5">
             <div className="sticky top-0 h-screen">
               <div className="w-full h-full bg-zinc-950 overflow-hidden relative">
-                <MapWrapper days={data.days} activeDay={activeDay} />
+                <MapWrapper days={data.days} activeActivityIndex={activeActivityIndex} flatActivities={flatActivities} />
                 <div className="absolute top-8 right-8 z-30">
                   <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-2xl border border-zinc-800/80 rounded-2xl text-white/50 text-[9px] font-black uppercase tracking-[0.25em]">
                     <Compass className="w-3 h-3" />
@@ -654,4 +599,3 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
     </div>
   );
 }
-
