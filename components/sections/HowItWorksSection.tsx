@@ -1,94 +1,441 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { MapPin, Loader2, Share2 } from "lucide-react";
-import { fadeUp, staggerContainer } from "@/lib/animations";
+import { useRef, useState, useEffect } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Brain, Map, Compass, FileText } from "lucide-react";
 
-export default function HowItWorksSection() {
+/* ══════════════════════════════════════════════════════════
+   VIBE DATA — 3 immersive travel experiences
+   ══════════════════════════════════════════════════════════ */
+const vibeData = [
+  {
+    vibe: "Relaxation",
+    destination: "Maldives",
+    tagline: "Where time dissolves into turquoise",
+    video:
+      "https://videos.pexels.com/video-files/1093662/1093662-hd_1920_1080_30fps.mp4",
+    poster:
+      "https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1920",
+    itinerary: [
+      "Overwater villa sunrise yoga",
+      "Private reef snorkeling",
+      "Sunset catamaran cruise",
+    ],
+    accent: "#1BBCBC",
+  },
+  {
+    vibe: "Adventure",
+    destination: "Patagonia",
+    tagline: "Chase the edge of the map",
+    video:
+      "https://videos.pexels.com/video-files/857251/857251-hd_1920_1080_25fps.mp4",
+    poster:
+      "https://images.pexels.com/photos/2356045/pexels-photo-2356045.jpeg?auto=compress&cs=tinysrgb&w=1920",
+    itinerary: [
+      "Torres del Paine sunrise trek",
+      "Glacier kayaking expedition",
+      "Estancia campfire under stars",
+    ],
+    accent: "#E67E22",
+  },
+  {
+    vibe: "Cultural",
+    destination: "Kyoto",
+    tagline: "A thousand years in a single moment",
+    video:
+      "https://videos.pexels.com/video-files/856973/856973-hd_1920_1080_30fps.mp4",
+    poster:
+      "https://images.pexels.com/photos/402028/pexels-photo-402028.jpeg?auto=compress&cs=tinysrgb&w=1920",
+    itinerary: [
+      "Fushimi Inari at golden hour",
+      "Private tea ceremony in Gion",
+      "Bamboo grove meditation walk",
+    ],
+    accent: "#D4A76A",
+  },
+];
+
+const featuredCards = [
+  {
+    icon: Brain,
+    title: "Smart AI",
+    text: "Your 24/7 personal travel concierge, generating pixel-perfect plans tailored to your vibe.",
+  },
+  {
+    icon: Map,
+    title: "Optimized Routes",
+    text: "Efficient pathing between all destinations to save you time and maximize exploration.",
+  },
+  {
+    icon: Compass,
+    title: "Hidden Gems",
+    text: "Curated spots off the beaten path, from local cafes to secret viewpoints.",
+  },
+  {
+    icon: FileText,
+    title: "Export & Share",
+    text: "Download your full itinerary as a stunning PDF or share it instantly via link.",
+  },
+];
+
+/* ══════════════════════════════════════════════════════════
+   VIBE PANEL — single immersive full-viewport panel
+   ══════════════════════════════════════════════════════════ */
+function VibePanel({
+  data,
+  index,
+  onInView,
+}: {
+  data: (typeof vibeData)[0];
+  index: number;
+  onInView: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Track which panel is in view + play/pause videos
+  useEffect(() => {
+    const el = panelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          onInView();
+          videoRef.current?.play().catch(() => {});
+        } else {
+          videoRef.current?.pause();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [onInView, isMobile]);
+
+  // Parallax transforms
+  const { scrollYProgress } = useScroll({
+    target: panelRef,
+    offset: ["start end", "end start"],
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["6%", "-6%"]);
+
+  const showVideo = !isMobile && !videoFailed;
+  const stagger = (i: number) => ({ delay: 0.15 + i * 0.12 });
+
   return (
-    <section id="how-it-works" className="bg-[#F5EFE0] py-[140px] px-6 md:px-[8vw] relative overflow-hidden">
-      {/* Subtle background flair */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-terracotta/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3" />
+    <div
+      ref={panelRef}
+      className="relative h-screen w-full overflow-hidden flex items-center"
+    >
+      {/* ── Background Media with parallax ── */}
+      <motion.div
+        className="absolute inset-0 w-full h-[125%] -top-[12%]"
+        style={{ y: bgY }}
+      >
+        {showVideo ? (
+          <video
+            ref={videoRef}
+            className="absolute inset-0 w-full h-full object-cover scale-105"
+            muted
+            loop
+            playsInline
+            preload="none"
+            poster={data.poster}
+            onError={() => setVideoFailed(true)}
+          >
+            <source src={data.video} type="video/mp4" />
+          </video>
+        ) : (
+          <motion.img
+            src={data.poster}
+            alt={data.destination}
+            className="absolute inset-0 w-full h-full object-cover"
+            animate={{ scale: [1, 1.08] }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+          />
+        )}
+      </motion.div>
 
-      <div className="max-w-[1240px] mx-auto text-center relative z-10">
-        {/* Top Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center justify-center px-5 py-1.5 mb-8 rounded-full border border-navy/10 bg-white/50 backdrop-blur-sm"
-        >
-          <span className="text-[10px] font-inter text-navy/60 font-bold uppercase tracking-[0.2em]">
-            The Process
-          </span>
-        </motion.div>
+      {/* ── Cinematic overlay stack ── */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+      <div
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          background: `radial-gradient(ellipse at 30% 70%, ${data.accent}40, transparent 70%)`,
+        }}
+      />
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,0.7)]" />
+      <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('/noise.png')]" />
 
-        {/* Title & Subtitle */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          <h2 className="font-serif italic font-medium text-[clamp(32px,5vw,64px)] text-navy leading-[1.05] mb-6 tracking-tight">
-            Crafting your <span className="text-terracotta">perfect</span> escape.
-          </h2>
-          <p className="font-inter text-[16px] md:text-[20px] text-navy/60 max-w-[640px] mx-auto mb-20 leading-relaxed font-medium">
-            Our meticulous generation process combines premium aesthetics with personalized travel intelligence.
-          </p>
-        </motion.div>
-
-        {/* 4 Cards Grid */}
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left"
-        >
-          {/* Card 1 */}
-          <motion.div variants={fadeUp} className="group relative flex flex-col items-center text-center p-8 rounded-[32px] bg-white shadow-[0_10px_40px_rgba(15,25,35,0.03)] hover:shadow-[0_30px_70px_rgba(15,25,35,0.08)] transition-all duration-500 border border-white/50">
-            <div className="w-20 h-20 rounded-full bg-navy/5 flex items-center justify-center mb-8 relative">
-              <MapPin className="w-8 h-8 text-terracotta fill-terracotta/20" />
-              <div className="absolute inset-0 rounded-full border border-terracotta/20 scale-125 opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700" />
-            </div>
-            <div className="text-terracotta text-[12px] font-bold uppercase tracking-widest mb-3">Phase 01</div>
-            <h3 className="text-navy font-serif text-[22px] mb-4">Set Preferences</h3>
-            <p className="text-navy/50 text-[15px] leading-relaxed font-medium">Define your destination, duration, and the unique vibe of your journey.</p>
+      {/* ── Content ── */}
+      <motion.div
+        className="relative z-10 w-full max-w-[1200px] mx-auto px-8 md:px-16"
+        style={{ y: contentY }}
+      >
+        <div className="max-w-[620px]">
+          {/* Vibe label */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={stagger(0)}
+            className="flex items-center gap-4 mb-6"
+          >
+            <div
+              className="w-8 h-[2px]"
+              style={{ backgroundColor: data.accent }}
+            />
+            <span
+              className="text-[11px] md:text-[13px] font-bold uppercase tracking-[0.35em]"
+              style={{ color: data.accent }}
+            >
+              {data.vibe}
+            </span>
           </motion.div>
 
-          {/* Card 2 */}
-          <motion.div variants={fadeUp} className="group relative flex flex-col items-center text-center p-8 rounded-[32px] bg-white shadow-[0_10px_40px_rgba(15,25,35,0.03)] hover:shadow-[0_30px_70px_rgba(15,25,35,0.08)] transition-all duration-500 border border-white/50">
-            <div className="w-20 h-20 rounded-full bg-navy/5 flex items-center justify-center mb-8 relative overflow-hidden">
-              <img src="https://images.unsplash.com/photo-1542820229-081e0c12af0b?q=80&w=200&auto=format&fit=crop" className="w-full h-full object-cover brightness-75 group-hover:scale-110 transition-transform duration-700" alt="Vibe" />
-              <div className="absolute inset-0 bg-navy/20" />
-            </div>
-            <div className="text-terracotta text-[12px] font-bold uppercase tracking-widest mb-3">Phase 02</div>
-            <h3 className="text-navy font-serif text-[22px] mb-4">Choose a Vibe</h3>
-            <p className="text-navy/50 text-[15px] leading-relaxed font-medium">From adventure to serenity, select a style that resonates with your soul.</p>
+          {/* Destination name */}
+          <motion.h2
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ ...stagger(1), duration: 0.8 }}
+            className="text-sand text-[52px] md:text-[90px] lg:text-[110px] font-[family-name:var(--font-serif)] italic leading-[0.9] tracking-tight mb-4 md:mb-6"
+          >
+            {data.destination}
+          </motion.h2>
+
+          {/* Tagline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={stagger(2)}
+            className="text-sand/50 text-[15px] md:text-[18px] font-inter leading-relaxed mb-10 md:mb-14 max-w-[440px]"
+          >
+            {data.tagline}
+          </motion.p>
+
+          {/* Mini itinerary preview */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={stagger(3)}
+            className="border-l border-sand/15 pl-5 md:pl-6 flex flex-col gap-3"
+          >
+            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-terracotta font-bold mb-1">
+              Sample Itinerary
+            </span>
+            {data.itinerary.map((item, i) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, x: -12 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6 + i * 0.12 }}
+                className="flex items-center gap-3"
+              >
+                <span className="text-sand/20 font-serif italic text-sm">
+                  0{i + 1}
+                </span>
+                <span className="text-sand/60 text-[13px] md:text-[14px] font-inter font-medium">
+                  {item}
+                </span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* ── Panel number (bottom-right) ── */}
+      <div className="absolute bottom-8 right-8 md:bottom-12 md:right-16 z-10 flex items-baseline gap-2">
+        <span className="text-sand/10 font-serif italic text-[80px] md:text-[120px] leading-none">
+          0{index + 1}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   MAIN SECTION
+   ══════════════════════════════════════════════════════════ */
+export default function HowItWorksSection() {
+  const [activeVibe, setActiveVibe] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const scrollToPanel = (idx: number) => {
+    panelRefs.current[idx]?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <section id="how-it-works" className="relative">
+      {/* ═══════════════ INTRO PANEL ═══════════════ */}
+      <div className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#060606]">
+        {/* Ambient glows */}
+        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-terracotta/5 rounded-full blur-[180px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-sand/5 rounded-full blur-[150px] pointer-events-none" />
+
+        <div className="relative z-10 text-center px-6 max-w-[800px]">
+          {/* Script accent */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="text-[22px] md:text-[44px] font-bold tracking-[0.5em] text-terracotta mb-4"
+            style={{ fontFamily: "var(--font-dancing), cursive" }}
+          >
+            Discovery
           </motion.div>
 
-          {/* Card 3 */}
-          <motion.div variants={fadeUp} className="group relative flex flex-col items-center text-center p-8 rounded-[32px] bg-navy shadow-[0_30px_70px_rgba(15,25,35,0.2)] transition-all duration-500 border border-white/5 scale-105 z-10 overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-            <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center mb-8 relative">
-              <Loader2 className="w-8 h-8 text-sand animate-spin" />
-            </div>
-            <div className="text-terracotta text-[12px] font-bold uppercase tracking-widest mb-3">Phase 03</div>
-            <h3 className="text-sand font-serif text-[22px] mb-4">AI Processing</h3>
-            <p className="text-sand/50 text-[15px] leading-relaxed font-medium">Our advanced algorithms orchestrate every minute of your trip with precision.</p>
+          {/* Main headline */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="flex items-center justify-center mb-6 md:mb-10"
+          >
+            <div className="h-[1px] bg-sand/15 flex-grow max-w-[120px] md:max-w-[200px] mr-4 md:mr-8" />
+            <h2 className="text-sand text-xl md:text-5xl lg:text-6xl font-serif tracking-[0.12em] uppercase shrink-0 font-thin">
+              Choose your world
+            </h2>
+            <div className="h-[1px] bg-sand/15 flex-grow max-w-[120px] md:max-w-[200px] ml-4 md:ml-8" />
           </motion.div>
 
-          {/* Card 4 */}
-          <motion.div variants={fadeUp} className="group relative flex flex-col items-center text-center p-8 rounded-[32px] bg-white shadow-[0_10px_40px_rgba(15,25,35,0.03)] hover:shadow-[0_30px_70px_rgba(15,25,35,0.08)] transition-all duration-500 border border-white/50">
-            <div className="w-20 h-20 rounded-full bg-navy/5 flex items-center justify-center mb-8 relative">
-              <Share2 className="w-8 h-8 text-terracotta fill-terracotta/20" />
-            </div>
-            <div className="text-terracotta text-[12px] font-bold uppercase tracking-widest mb-3">Phase 04</div>
-            <h3 className="text-navy font-serif text-[22px] mb-4">Export & Share</h3>
-            <p className="text-navy/50 text-[15px] leading-relaxed font-medium">Download your guide as a stunning PDF or share your journey with the world.</p>
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.35 }}
+            className="text-sand/40 text-sm md:text-base max-w-[520px] mx-auto leading-relaxed font-inter"
+          >
+            Every journey starts with a feeling. Tell us your vibe — we
+            architect the perfect itinerary around it.
+          </motion.p>
+
+          {/* Scroll indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.8 }}
+            className="mt-16 md:mt-24 flex flex-col items-center gap-3"
+          >
+            <span className="text-sand/20 text-[10px] uppercase tracking-[0.3em] font-bold">
+              Scroll to explore
+            </span>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="w-5 h-8 rounded-full border border-sand/20 flex justify-center pt-1.5"
+            >
+              <div className="w-1 h-2 rounded-full bg-sand/40" />
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
+      </div>
+
+      {/* ═══════════════ VIBE PANELS ═══════════════ */}
+      <div ref={containerRef} className="relative">
+        {/* Floating vibe nav (desktop only) */}
+        <div className="hidden lg:block fixed right-8 top-1/2 -translate-y-1/2 z-50 mix-blend-difference">
+          <div className="flex flex-col items-center gap-5">
+            {vibeData.map((vibe, idx) => (
+              <button
+                key={vibe.vibe}
+                onClick={() => scrollToPanel(idx)}
+                className="group relative flex items-center"
+              >
+                {/* Label on hover */}
+                <span className="absolute right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[10px] text-sand/70 uppercase tracking-[0.2em] font-bold whitespace-nowrap">
+                  {vibe.vibe}
+                </span>
+                <div
+                  className={`rounded-full transition-all duration-500 ${
+                    activeVibe === idx
+                      ? "w-3 h-3 bg-terracotta shadow-[0_0_14px_rgba(196,99,44,0.7)]"
+                      : "w-2 h-2 bg-sand/30 group-hover:bg-sand/60"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Panels */}
+        {vibeData.map((vibe, idx) => (
+          <div
+            key={vibe.vibe}
+            ref={(el) => { panelRefs.current[idx] = el; }}
+          >
+            <VibePanel
+              data={vibe}
+              index={idx}
+              onInView={() => setActiveVibe(idx)}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* ═══════════════ WHAT'S INCLUDED ═══════════════ */}
+      <div className="bg-[#060606] py-24 md:py-40 px-6 md:px-[8vw] relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-sand/10 to-transparent" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-terracotta/5 rounded-full blur-[150px] pointer-events-none" />
+
+        <div className="max-w-[1200px] mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center mb-14 md:mb-20"
+          >
+            <h2 className="text-sand text-2xl md:text-4xl font-serif tracking-widest uppercase mr-4 md:mr-8 shrink-0">
+              What&apos;s Included
+            </h2>
+            <div className="h-[1px] bg-sand/15 flex-grow" />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {featuredCards.map((card, idx) => (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.08 + idx * 0.1 }}
+                className="group border border-sand/8 rounded-2xl p-8 bg-sand/[0.02] hover:bg-sand/[0.05] hover:border-terracotta/20 transition-all duration-500"
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <card.icon className="w-6 h-6 text-terracotta group-hover:scale-110 transition-transform duration-300" />
+                  <h3 className="text-sand text-lg font-medium">
+                    {card.title}
+                  </h3>
+                </div>
+                <p className="text-sand/45 text-sm leading-relaxed">
+                  {card.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

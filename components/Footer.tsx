@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-navy pt-[120px] pb-12 px-6 md:px-[8vw] border-t border-white/5 relative overflow-hidden">
+    <footer className="bg-navy pt-[120px] pb-12 px-6 md:px-[8vw] border-t border-sand/5 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-terracotta/20 to-transparent" />
 
       <div className="max-w-[1240px] mx-auto relative z-10">
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center border-t border-white/5 pt-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-center border-t border-sand/5 pt-12 gap-6">
           <p className="font-sans text-[11px] text-sand/20 font-bold uppercase tracking-[0.2em]">
             © 2024 NomadGo · All Rights Reserved
           </p>

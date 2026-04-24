@@ -139,7 +139,7 @@ export function FocusRail({
   return (
     <div
       className={cn(
-        "group relative flex w-full flex-col overflow-hidden bg-neutral-950 text-white outline-none select-none overflow-x-hidden py-[30px] md:py-[60px]",
+        "group relative flex w-full flex-col overflow-hidden bg-neutral-950 text-sand outline-none select-none overflow-x-hidden py-[30px] md:py-[60px]",
         className
       )}
       onMouseEnter={() => setIsHovering(true)}
@@ -156,10 +156,20 @@ export function FocusRail({
           Explore
         </div>
 
-        {/* Headline — dramatic scale jump, ultra-light + bold contrast */}
-        <h2 className="text-[22px] md:text-[50px] font-semibold tracking-tight text-white mb-[30px] md:mb-[60px]">
-          Travel beyond ordinary
-        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center justify-center my-4 md:my-10"
+        >
+          <div className="h-[1px] bg-sand/20 flex-grow max-w-[100px] md:max-w-[200px] mr-4 md:mr-8"></div>
+          <h2 className="text-sand text-lg md:text-5xl font-serif tracking-[0.15em] uppercase text-center shrink-0 font-thin">
+            Travel beyond ordinary
+          </h2>
+          <div className="h-[1px] bg-sand/20 flex-grow max-w-[100px] md:max-w-[200px] ml-4 md:ml-8"></div>
+        </motion.div>
+
+
       </div>
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -183,7 +193,7 @@ export function FocusRail({
       </div>
 
       {/* Main Stage */}
-      <div className="relative z-10 flex flex-1 flex-col justify-center px-4 md:px-8">
+      <div className="relative z-10 flex flex-1 flex-col justify-center px-4 md:px-8 md:mt-10">
         {/* DRAGGABLE RAIL CONTAINER */}
         <motion.div
           className="relative mx-auto flex h-[360px] w-full max-w-6xl items-center justify-center perspective-[1200px] cursor-grab active:cursor-grabbing"
@@ -216,8 +226,8 @@ export function FocusRail({
               <motion.div
                 key={absIndex}
                 className={cn(
-                  "absolute aspect-[3/4] w-[260px] md:w-[300px] rounded-2xl border-t border-white/20 bg-neutral-900 shadow-2xl transition-shadow duration-300",
-                  isCenter ? "z-20 shadow-white/10" : "z-10"
+                  "absolute aspect-[3/4] w-[260px] md:w-[300px] rounded-2xl border-t border-sand/20 bg-neutral-900 shadow-2xl transition-shadow duration-300",
+                  isCenter ? "z-20 shadow-sand/10" : "z-10"
                 )}
                 initial={false}
                 animate={{
@@ -246,7 +256,7 @@ export function FocusRail({
                 />
 
                 {/* Lighting layers */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-sand/10 to-transparent pointer-events-none" />
                 <div className="absolute inset-0 rounded-2xl bg-black/10 pointer-events-none mix-blend-multiply" />
               </motion.div>
             );
@@ -270,7 +280,7 @@ export function FocusRail({
                     {activeItem.meta}
                   </span>
                 )}
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl text-white">
+                <h2 className="text-3xl font-bold tracking-tight md:text-4xl text-sand">
                   {activeItem.title}
                 </h2>
                 {activeItem.description && (
@@ -283,10 +293,10 @@ export function FocusRail({
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1 rounded-full bg-neutral-900/80 p-1 ring-1 ring-white/10 backdrop-blur-md">
+            <div className="flex items-center gap-1 rounded-full bg-neutral-900/80 p-1 ring-1 ring-sand/10 backdrop-blur-md">
               <button
                 onClick={handlePrev}
-                className="rounded-full p-3 text-neutral-400 transition hover:bg-white/10 hover:text-white active:scale-95"
+                className="rounded-full p-3 text-neutral-400 transition hover:bg-sand/10 hover:text-sand active:scale-95"
                 aria-label="Previous"
               >
                 <ChevronLeft className="h-5 w-5" />
@@ -296,7 +306,7 @@ export function FocusRail({
               </span>
               <button
                 onClick={handleNext}
-                className="rounded-full p-3 text-neutral-400 transition hover:bg-white/10 hover:text-white active:scale-95"
+                className="rounded-full p-3 text-neutral-400 transition hover:bg-sand/10 hover:text-sand active:scale-95"
                 aria-label="Next"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -306,7 +316,7 @@ export function FocusRail({
             {activeItem.href && (
               <Link
                 href={activeItem.href}
-                className="group flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition-transform hover:scale-105 active:scale-95"
+                className="group flex items-center gap-2 rounded-full bg-sand px-5 py-3 text-sm font-semibold text-black transition-transform hover:scale-105 active:scale-95"
               >
                 Plan
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

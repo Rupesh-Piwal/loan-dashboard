@@ -52,12 +52,12 @@ export default function PricingSection() {
               whileHover={{ y: -10 }}
               className={`group relative p-10 rounded-[40px] flex flex-col transition-all duration-500 ${tier.featured
                 ? "bg-navy text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)] ring-1 ring-white/10"
-                : "bg-white text-navy shadow-[0_20px_60px_rgba(15,25,35,0.03)] border border-navy/5"
+                : "bg-sand text-navy shadow-[0_20px_60px_rgba(15,25,35,0.03)] border border-navy/5"
                 }`}
             >
               {tier.featured && (
                 <div className="absolute top-8 right-10">
-                  <div className="bg-terracotta text-white font-sans text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full">
+                  <div className="bg-terracotta text-sand font-sans text-[10px] uppercase font-bold tracking-widest px-4 py-1.5 rounded-full">
                     Curated Pick
                   </div>
                 </div>
@@ -81,7 +81,7 @@ export default function PricingSection() {
               </div>
 
               <button className={`w-full py-5 rounded-[20px] font-sans text-[14px] font-bold tracking-widest uppercase transition-all duration-500 mt-auto ${tier.featured
-                ? "bg-terracotta text-white hover:bg-terracotta/90"
+                ? "bg-terracotta text-sand hover:bg-terracotta/90"
                 : "bg-navy text-sand hover:bg-navy/90"
                 }`}>
                 {tier.cta}

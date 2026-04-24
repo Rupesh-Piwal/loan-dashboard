@@ -21,10 +21,10 @@ export default function PdfExportSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-[1000px] aspect-[1.414/0.9] bg-white rounded-[4px] shadow-[0_80px_160px_-40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col relative scale-[1.05]"
+          className="w-full max-w-[1000px] aspect-[1.414/0.9] bg-sand rounded-[4px] shadow-[0_80px_160px_-40px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col relative scale-[1.05]"
         >
           {/* PDF Mockup Content */}
-          <div className="absolute inset-0 p-[5%] bg-white flex flex-col gap-[3%]">
+          <div className="absolute inset-0 p-[5%] bg-sand flex flex-col gap-[3%]">
             <div className="flex justify-between items-baseline border-b-2 border-navy pb-4 mb-4">
               <div className="font-serif text-[clamp(40px,5vw,72px)] text-navy leading-none tracking-tighter">KYOTO</div>
               <div className="font-serif italic text-navy/40 text-[clamp(14px,2vw,20px)]">05 Days in Japan</div>
@@ -66,7 +66,7 @@ export default function PdfExportSection() {
       </div>
 
       {/* Subtle logo in bg */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif italic text-[300px] text-white/[0.02] select-none pointer-events-none">NG</div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-serif italic text-[300px] text-sand/[0.02] select-none pointer-events-none">NG</div>
     </section>
   );
 }

@@ -44,14 +44,14 @@ export default function Header() {
       className={cn(
         "fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 md:px-14 py-4 md:py-6 transition-all duration-500",
         (scrolled || isOpen)
-          ? "bg-black/30 backdrop-blur-xl border-b border-white/10 py-3 md:py-4 shadow-xl"
+          ? "bg-black/30 backdrop-blur-xl border-b border-sand/10 py-3 md:py-4 shadow-xl"
           : "bg-transparent"
       )}
     >
       {/* 📱 Mobile Menu Toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative z-[110] p-2 md:hidden text-white/90 hover:text-white transition-colors"
+        className="relative z-[110] p-2 md:hidden text-sand/90 hover:text-sand transition-colors"
         aria-label="Toggle menu"
       >
         <AnimatePresence mode="wait">
@@ -85,10 +85,10 @@ export default function Header() {
           <Link
             key={link.label}
             href={link.href}
-            className="group relative text-sm text-white/80 font-medium tracking-wide transition-colors duration-300 hover:text-white"
+            className="group relative text-sm text-sand/80 font-medium tracking-wide transition-colors duration-300 hover:text-sand"
           >
             {link.label}
-            <span className="absolute left-1/2 -bottom-1 h-[1.5px] w-0 -translate-x-1/2 bg-white transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute left-1/2 -bottom-1 h-[1.5px] w-0 -translate-x-1/2 bg-sand transition-all duration-300 group-hover:w-full"></span>
           </Link>
         ))}
       </nav>
@@ -96,7 +96,7 @@ export default function Header() {
       {/* Logo (Center) */}
       <Link
         href="/"
-        className="absolute left-1/2 -translate-x-1/2 font-serif italic text-[24px] md:text-[32px] text-white tracking-tight drop-shadow-lg"
+        className="absolute left-1/2 -translate-x-1/2 font-serif italic text-[24px] md:text-[32px] text-sand tracking-tight drop-shadow-lg"
       >
         Nomad<span className="text-[#C5632D]">Go</span>
       </Link>
@@ -105,14 +105,14 @@ export default function Header() {
       <div className="flex items-center gap-3 md:gap-5">
         <Link
           href="/signin"
-          className="hidden sm:block px-5 py-2.5 rounded-full border border-white/20 text-[13px] text-white/85 font-medium backdrop-blur-md hover:bg-white/10 hover:border-white/35 transition-all"
+          className="hidden sm:block px-5 py-2.5 rounded-full border border-sand/20 text-[13px] text-sand/85 font-medium backdrop-blur-md hover:bg-sand/10 hover:border-sand/35 transition-all"
         >
           LogIn
         </Link>
         <Link
           href="/dashboard/itinerary/new"
           className="group hidden md:inline-flex items-center gap-2 px-6 py-2.5 rounded-full
-            bg-[#C5632D] text-[13px] text-white font-bold tracking-wide
+            bg-[#C5632D] text-[13px] text-sand font-bold tracking-wide
             transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
             hover:bg-[#b55524] active:scale-[0.98] shadow-lg shadow-orange-950/20"
         >
@@ -143,7 +143,7 @@ export default function Header() {
                   <Link
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="text-2xl text-white/90 font-serif italic tracking-wide hover:text-[#C5632D] transition-colors"
+                    className="text-2xl text-sand/90 font-serif italic tracking-wide hover:text-[#C5632D] transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -159,14 +159,14 @@ export default function Header() {
                 <Link
                   href="/signin"
                   onClick={() => setIsOpen(false)}
-                  className="w-full py-4 text-center rounded-2xl border border-white/10 text-white/80 font-medium"
+                  className="w-full py-4 text-center rounded-2xl border border-sand/10 text-sand/80 font-medium"
                 >
                   Log In
                 </Link>
                 <Link
                   href="/dashboard/itinerary/new"
                   onClick={() => setIsOpen(false)}
-                  className="w-full py-4 text-center rounded-2xl bg-[#C5632D] text-white font-bold flex items-center justify-center gap-2"
+                  className="w-full py-4 text-center rounded-2xl bg-[#C5632D] text-sand font-bold flex items-center justify-center gap-2"
                 >
                   <span>Plan My Trip</span>
                   <ArrowRight className="w-4 h-4" />
