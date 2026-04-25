@@ -84,7 +84,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative w-full h-screen">
       <Header />
 
       {/* ════ FULL-SCREEN BACKGROUND IMAGES ════ */}
@@ -172,7 +172,7 @@ export default function Hero() {
         <div className="bg-black/20 backdrop-blur-3xl border border-sand/10 rounded-[28px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-wrap md:flex-nowrap items-center p-1.5 md:p-3 relative">
 
           {/* Destination */}
-          <div className="w-full md:flex-[1.4] flex items-center px-2 py-2.5 md:py-2 relative group cursor-text">
+          <div className="w-full md:flex-[2.5] flex items-center px-4 py-2.5 md:py-3 relative group cursor-text">
             <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-sand/10 flex items-center justify-center shrink-0 mr-3">
               <MapPin className="w-3 h-3 md:w-5 md:h-5 text-sand/70" />
             </div>
@@ -180,7 +180,7 @@ export default function Hero() {
               <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-sand/40 font-bold mb-0.5">
                 Destination
               </span>
-              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!p-0 [&_input]:!text-sand [&_input]:!text-[15px] md:[&_input]:!text-[17px] [&_input]:!font-bold [&_input]:!placeholder:text-sand/20 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
+              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!py-1.5 [&_input]:!px-0 [&_input]:!text-sand [&_input]:!text-[18px] md:[&_input]:!text-[22px] [&_input]:!font-bold [&_input]:!placeholder:text-sand/20 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
                 <LocationInput
                   onSelect={(loc) => {
                     const fullName = loc.isFeatured
@@ -189,6 +189,7 @@ export default function Hero() {
                     setDestination(fullName);
                   }}
                   disabled={isPending}
+                  dropdownClassName="md:w-[720px] md:-left-4"
                 />
               </div>
             </div>

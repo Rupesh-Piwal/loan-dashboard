@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MapPin, CircleNotch, Sparkle, Globe, CaretRight } from "@phosphor-icons/react";
+import { MapPin, CircleNotch, Sparkle, Globe, CaretRight, User, Compass } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -19,17 +19,10 @@ interface LocationInputProps {
   defaultValue?: string;
   onSelect?: (location: LocationSuggestion) => void;
   disabled?: boolean;
+  dropdownClassName?: string;
 }
 
 const FEATURED_DESTINATIONS: LocationSuggestion[] = [
-  {
-    name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503, isFeatured: true,
-    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=200&h=200&auto=format&fit=crop"
-  },
-  {
-    name: "Beijing", country: "China", lat: 39.9042, lng: 116.4074, isFeatured: true,
-    image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&q=80&w=400"
-  },
   {
     name: "Bali", country: "Indonesia", lat: -8.3405, lng: 115.092, isFeatured: true,
     image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=200&h=200&auto=format&fit=crop"
@@ -48,7 +41,7 @@ const FEATURED_DESTINATIONS: LocationSuggestion[] = [
   },
 ];
 
-export default function LocationInput({ defaultValue = "", onSelect, disabled }: LocationInputProps) {
+export default function LocationInput({ defaultValue = "", onSelect, disabled, dropdownClassName }: LocationInputProps) {
   const [query, setQuery] = useState(defaultValue);
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -143,45 +136,55 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
       </div>
 
       {(showFeatured || showResults) && (
-        <div className="absolute top-full left-0 w-full mt-4 bg-black/40 border border-white/10 rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[1.8] animate-in fade-in zoom-in-95 duration-500 origin-top">
+        <div className={cn(
+          "absolute top-full left-0 w-full mt-4 bg-[#0F1923]/80 border border-white/10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.7)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[2] animate-in fade-in zoom-in-95 duration-500 origin-top",
+          dropdownClassName
+        )}>
 
           {showFeatured && (
-            <div className="py-5">
-              <div className="px-6 mb-5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                    <Sparkle className="w-4 h-4 text-orange-400" />
+            <div className="py-7">
+              <div className="px-8 mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-terracotta/20 flex items-center justify-center border border-terracotta/10">
+                    <Compass size={24} weight="light" className="text-terracotta" />
                   </div>
-                  <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/90">
-                    Hot Destinations
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-[12px] font-bold uppercase tracking-[0.25em] text-white/90">
+                      Curated Destinations
+                    </span>
+                    <span className="text-[10px] text-white/30 uppercase tracking-[0.1em] font-medium mt-0.5">
+                      Handpicked for your next adventure
+                    </span>
+                  </div>
                 </div>
-                <div className="h-px bg-white/10 flex-1 ml-6" />
+                <div className="h-px bg-white/5 flex-1 ml-10" />
               </div>
 
-              <div className="flex gap-4 overflow-x-auto px-6 pb-4 no-scrollbar scroll-smooth">
+              <div className="flex flex-row gap-5 px-8 pb-4 overflow-x-auto no-scrollbar scroll-smooth">
                 {FEATURED_DESTINATIONS.map((s, i) => (
                   <button
                     key={`featured-${i}`}
                     type="button"
-                    className="flex-shrink-0 w-[110px] group/card text-left outline-none"
+                    className="flex-shrink-0 w-[30px] group/card text-left outline-none"
                     onClick={() => handleSelect(s)}
                   >
-                    <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden mb-2.5 shadow-lg group-hover/card:shadow-orange-500/20 transition-all duration-500 group-hover/card:-translate-y-1 border border-white/5">
+                    <div className="relative w-full aspect-[3/4] rounded-[2rem] overflow-hidden mb-3 shadow-2xl border border-white/5 transition-all duration-700 group-hover/card:scale-[1.02] group-hover/card:-translate-y-1">
                       <img
                         src={s.image}
                         alt={s.name}
-                        className="w-full h-full object-cover grayscale-[0.2] group-hover/card:grayscale-0 group-hover/card:scale-110 transition-all duration-700"
+                        className="w-full h-full object-cover grayscale-[0.3] group-hover/card:grayscale-0 transition-all duration-700 group-hover/card:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90 group-hover/card:opacity-70 transition-opacity" />
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <p className="text-white font-bold text-xs tracking-tight leading-tight">{s.name}</p>
-                        <p className="text-white/50 text-[9px] uppercase font-black tracking-widest mt-1">{s.country}</p>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover/card:opacity-60 transition-opacity" />
+                      <div className="absolute bottom-5 left-5 right-5">
+                        <p className="text-white font-bold text-lg tracking-tight leading-tight">{s.name}</p>
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          <div className="w-1 h-1 rounded-full bg-terracotta" />
+                          <p className="text-white/50 text-[10px] uppercase font-black tracking-widest">{s.country}</p>
+                        </div>
                       </div>
                     </div>
                   </button>
                 ))}
-                <div className="flex-shrink-0 w-2" />
               </div>
             </div>
           )}
