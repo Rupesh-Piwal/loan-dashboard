@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MapPin, MagnifyingGlass, CircleNotch, Sparkle, Globe, Compass, CaretRight } from "@phosphor-icons/react";
+import { MapPin, CircleNotch, Sparkle, Globe, CaretRight } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -74,11 +74,12 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
 
     if (query.length < 3) {
       setSuggestions([]);
+      setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
     const timer = setTimeout(async () => {
-      setIsLoading(true);
       try {
         const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
         const data = await res.json();
@@ -98,7 +99,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled }:
       } finally {
         setIsLoading(false);
       }
-    }, 400);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [query]);
