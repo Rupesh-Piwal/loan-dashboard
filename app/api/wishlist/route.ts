@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { fetchUnsplashImage } from "@/lib/unsplash";
 
 // GET: Fetch all wishlist items for the authenticated user
 export async function GET() {
@@ -31,10 +32,27 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { destination, photoUrl } = body;
+    let { destination, photoUrl } = body;
 
-    if (!destination || !photoUrl) {
-      return NextResponse.json({ error: "Missing destination or photoUrl" }, { status: 400 });
+    if (!destination) {
+      return NextResponse.json({ error: "Missing destination" }, { status: 400 });
+    }
+
+    // Enhance photoUrl if it's generic, missing, or a low-res fallback
+    const isGeneric = !photoUrl || 
+                      photoUrl.includes("photo-1500530855697-b586d89ba3ee") || 
+                      photoUrl.includes("photo-1469854523086-cc02fe5d8800");
+
+    if (isGeneric) {
+      try {
+        const dynamicImage = await fetchUnsplashImage(destination);
+        if (dynamicImage) {
+          photoUrl = dynamicImage;
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic image for wishlist:", err);
+        // Keep original photoUrl if fetch fails
+      }
     }
 
     // Get the highest sortOrder to append at end
@@ -47,7 +65,7 @@ export async function POST(req: Request) {
       data: {
         userId: session.user.id,
         destination,
-        photoUrl,
+        photoUrl: photoUrl || "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1200&auto=format&fit=crop",
         sortOrder: (lastItem?.sortOrder ?? -1) + 1,
       },
     });

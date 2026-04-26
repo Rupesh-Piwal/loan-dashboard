@@ -19,7 +19,6 @@ const sidebarLinks = [
   { href: "/dashboard/history", label: "Trip History", icon: History },
   { href: "/dashboard/wishlist", label: "Wishlist", icon: Heart },
   { href: "/dashboard/credits", label: "Credits", icon: CreditCard },
-  { href: "/dashboard/billing", label: "Billing", icon: Wallet },
 ];
 
 export function DashboardSidebar() {
@@ -27,17 +26,6 @@ export function DashboardSidebar() {
 
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-64 border-r border-border/50 bg-background/50 backdrop-blur-xl flex flex-col z-40">
-      {/* <div className="p-6">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <Compass className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="font-serif text-xl font-semibold text-foreground tracking-tight">
-            TravelPulse
-          </span>
-        </Link>
-      </div> */}
-
       <nav className="flex-1 px-4 py-26 space-y-1">
         {sidebarLinks.map((link) => {
           const isActive = pathname === link.href;

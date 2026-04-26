@@ -3,21 +3,21 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Heart,
   Plus,
   Trash,
   MapPin,
   CircleNotch,
   Airplane,
   Globe,
-  MagnifyingGlass,
   X,
   Sparkle,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import Link from "next/link";
+import LocationInput from "@/app/components/itinerary/location-input";
 
 interface WishlistItem {
   id: string;
@@ -27,21 +27,28 @@ interface WishlistItem {
   createdAt: string;
 }
 
-// Curated destination suggestions with beautiful Unsplash images
-const SUGGESTED_DESTINATIONS = [
-  { destination: "Santorini, Greece", photoUrl: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&auto=format&fit=crop" },
-  { destination: "Kyoto, Japan", photoUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=800&auto=format&fit=crop" },
-  { destination: "Amalfi Coast, Italy", photoUrl: "https://images.unsplash.com/photo-1534113414509-0eec2bfb493f?w=800&auto=format&fit=crop" },
-  { destination: "Bali, Indonesia", photoUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&auto=format&fit=crop" },
-  { destination: "Marrakech, Morocco", photoUrl: "https://images.unsplash.com/photo-1509099836639-18ba4637e067?w=800&auto=format&fit=crop" },
-  { destination: "Reykjavik, Iceland", photoUrl: "https://images.unsplash.com/photo-1504829857797-ddff29c27927?w=800&auto=format&fit=crop" },
-  { destination: "Cape Town, South Africa", photoUrl: "https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=800&auto=format&fit=crop" },
-  { destination: "Machu Picchu, Peru", photoUrl: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=800&auto=format&fit=crop" },
-  { destination: "Dubai, UAE", photoUrl: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&auto=format&fit=crop" },
-  { destination: "Maldives", photoUrl: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&auto=format&fit=crop" },
-  { destination: "Swiss Alps", photoUrl: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&auto=format&fit=crop" },
-  { destination: "New York City, USA", photoUrl: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&auto=format&fit=crop" },
-];
+
+const WishlistSkeleton = () => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {[1, 2, 3, 4, 5, 6].map((i) => (
+      <Card key={i} className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-sm p-0">
+        <div className="relative h-48 overflow-hidden">
+          <Skeleton className="h-full w-full rounded-none" />
+        </div>
+        <div className="p-5 flex items-center justify-between">
+          <div className="space-y-2 flex-1">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-9 w-24 rounded-xl" />
+            <Skeleton className="h-9 w-9 rounded-xl" />
+          </div>
+        </div>
+      </Card>
+    ))}
+  </div>
+);
 
 export default function WishlistPage() {
   const [items, setItems] = useState<WishlistItem[]>([]);
@@ -49,7 +56,6 @@ export default function WishlistPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [addingDest, setAddingDest] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchItems = useCallback(async () => {
     try {
@@ -68,7 +74,10 @@ export default function WishlistPage() {
     fetchItems();
   }, [fetchItems]);
 
-  const handleAdd = async (destination: string, photoUrl: string) => {
+  const handleAdd = async (location: { name: string; country: string; image?: string }) => {
+    const destination = `${location.name}, ${location.country}`;
+    const photoUrl = location.image || `https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=800&auto=format&fit=crop`; // Beautiful generic travel fallback
+
     // Check if already in wishlist
     if (items.some((i) => i.destination.toLowerCase() === destination.toLowerCase())) {
       toast.info(`${destination} is already on your wishlist!`);
@@ -107,22 +116,7 @@ export default function WishlistPage() {
     }
   };
 
-  const filteredSuggestions = SUGGESTED_DESTINATIONS.filter(
-    (s) =>
-      s.destination.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !items.some((i) => i.destination.toLowerCase() === s.destination.toLowerCase())
-  );
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="flex flex-col items-center gap-4">
-          <CircleNotch className="w-8 h-8 animate-spin text-orange-500" />
-          <p className="text-muted-foreground text-sm font-medium">Loading your dream list...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-5xl space-y-10">
@@ -152,7 +146,9 @@ export default function WishlistPage() {
       </header>
 
       {/* Wishlist Grid */}
-      {items.length === 0 ? (
+      {loading ? (
+        <WishlistSkeleton />
+      ) : items.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -205,10 +201,7 @@ export default function WishlistPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
 
-                    {/* Floating Heart */}
-                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center shadow-lg">
-                      <Heart className="w-4 h-4 text-red-400 fill-red-400" />
-                    </div>
+                    
 
                     {/* Destination label on image */}
                     <div className="absolute bottom-4 left-5 right-5">
@@ -296,63 +289,41 @@ export default function WishlistPage() {
                     <X className="w-4 h-4" />
                   </Button>
                 </div>
-
-                {/* Search Bar */}
-                <div className="relative mb-6">
-                  <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search destinations..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-12 pl-11 pr-4 rounded-2xl bg-accent/30 border border-border/50 text-sm font-medium placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500/50 transition-all"
-                  />
-                </div>
               </div>
 
-              {/* Scrollable Suggestions Grid */}
               <div className="px-8 pb-8 overflow-y-auto max-h-[55vh]">
-                <div className="grid grid-cols-2 gap-4">
-                  {filteredSuggestions.map((suggestion) => (
-                    <button
-                      key={suggestion.destination}
-                      onClick={() => handleAdd(suggestion.destination, suggestion.photoUrl)}
-                      disabled={addingDest === suggestion.destination}
-                      className="group relative overflow-hidden rounded-2xl h-36 text-left transition-all duration-300 hover:ring-2 hover:ring-orange-500/50 active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-orange-500/50 disabled:opacity-60"
-                    >
-                      <img
-                        src={suggestion.photoUrl}
-                        alt={suggestion.destination}
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <p className="text-white font-bold text-sm tracking-tight drop-shadow-lg">
-                          {addingDest === suggestion.destination ? (
-                            <span className="flex items-center gap-2">
-                              <CircleNotch className="w-3.5 h-3.5 animate-spin" />
-                              Adding...
-                            </span>
-                          ) : (
-                            suggestion.destination
-                          )}
-                        </p>
-                      </div>
-                      <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-white/20">
-                        <Plus className="w-4 h-4 text-white" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                {filteredSuggestions.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <Globe className="w-10 h-10 text-muted-foreground/30 mb-4" />
-                    <p className="text-muted-foreground text-sm font-medium">
-                      {searchQuery ? "No matching destinations found" : "All destinations have been added!"}
-                    </p>
+                <div className="space-y-6">
+                  <div className="bg-accent/20 p-1.5 rounded-[2rem] border border-border/50">
+                    <LocationInput
+                      onSelect={(location) => {
+                        handleAdd({
+                          name: location.name,
+                          country: location.country,
+                          image: location.image || `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop`
+                        });
+                      }}
+                      dropdownClassName="!static !shadow-none !mt-2 !bg-transparent !border-none !p-0"
+                    />
                   </div>
-                )}
+
+                  {addingDest && (
+                    <div className="flex items-center justify-center gap-3 py-10">
+                      <CircleNotch className="w-5 h-5 animate-spin text-orange-500" />
+                      <p className="text-sm font-medium text-muted-foreground">
+                        Adding <span className="text-foreground font-bold">{addingDest}</span> to your collection...
+                      </p>
+                    </div>
+                  )}
+
+                  {!addingDest && (
+                    <div className="flex flex-col items-center justify-center py-16 text-center">
+                      <Globe className="w-12 h-12 text-orange-500/20 mb-4" />
+                      <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
+                        Search for any city, country or landmark to pin it to your dream board.
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </motion.div>
