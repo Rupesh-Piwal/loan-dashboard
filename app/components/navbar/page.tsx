@@ -17,6 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { handleLogout } from "@/app/actions/auth";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { useCredits } from "@/hooks/useCredits";
 
 interface UserProp {
   name?: string | null;
@@ -24,7 +25,15 @@ interface UserProp {
   image?: string | null;
 }
 
+const getCreditColor = (credits: number | null) => {
+  if (credits === null) return "bg-primary/10 text-primary";
+  if (credits > 70) return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
+  if (credits < 20) return "bg-rose-500/10 text-rose-600 dark:text-rose-400";
+  return "bg-amber-500/10 text-amber-600 dark:text-amber-400";
+};
+
 const Navbar = ({ user }: { user?: UserProp }) => {
+  const { credits } = useCredits();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -85,6 +94,12 @@ const Navbar = ({ user }: { user?: UserProp }) => {
             >
               Plan a Trip
             </Link>
+
+            <div className={`flex items-center gap-3 px-4 py-2 rounded-full w-fit transition-colors duration-300 ${getCreditColor(credits)}`}>
+              <Zap className="w-4 h-4" />
+              <span className="text-sm font-medium tracking-wide">Credits</span>
+              <span className="text-sm font-bold">{credits ?? 0}</span>
+            </div>
 
             {mounted && user ? (
               <div className="flex items-center gap-4">
