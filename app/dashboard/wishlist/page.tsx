@@ -31,18 +31,18 @@ interface WishlistItem {
 const WishlistSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     {[1, 2, 3, 4, 5, 6].map((i) => (
-      <Card key={i} className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-sm p-0">
-        <div className="relative h-48 overflow-hidden">
+      <Card key={i} className="group relative overflow-hidden rounded-[2.5rem] border border-border/50 bg-card/40 backdrop-blur-sm p-0 flex flex-col gap-0">
+        <div className="relative h-64 overflow-hidden">
           <Skeleton className="h-full w-full rounded-none" />
         </div>
-        <div className="p-5 flex items-center justify-between">
+        <div className="p-6 flex items-center justify-between">
           <div className="space-y-2 flex-1">
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-3 w-20" />
           </div>
           <div className="flex gap-2">
-            <Skeleton className="h-9 w-24 rounded-xl" />
-            <Skeleton className="h-9 w-9 rounded-xl" />
+            <Skeleton className="h-11 w-32 rounded-2xl" />
+            <Skeleton className="h-11 w-11 rounded-2xl" />
           </div>
         </div>
       </Card>
@@ -191,40 +191,46 @@ export default function WishlistPage() {
                 exit={{ opacity: 0, scale: 0.9, y: -10 }}
                 transition={{ delay: idx * 0.05, type: "spring", stiffness: 200, damping: 20 }}
               >
-                <Card className="group relative overflow-hidden rounded-[2rem] border border-border/50 bg-card/40 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(234,88,12,0.15)] cursor-default">
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
+                <Card className="group relative overflow-hidden rounded-[2.5rem] border border-border/50 bg-card/20 backdrop-blur-md hover:border-orange-500/30 transition-all duration-500 hover:shadow-[0_30px_60px_-15px_rgba(234,88,12,0.2)] cursor-default p-0 flex flex-col gap-0">
+                  {/* Image Container */}
+                  <div className="relative h-64 overflow-hidden">
                     <img
                       src={item.photoUrl}
                       alt={item.destination}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                    
+                    {/* Destination Info Overlaid on Image */}
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex flex-col gap-1">
 
-                    {/* Destination label on image */}
-                    <div className="absolute bottom-4 left-5 right-5">
-                      <h3 className="text-xl font-bold text-white tracking-tight leading-tight drop-shadow-lg">
-                        {item.destination}
-                      </h3>
+                        <h3 className="text-2xl font-bold text-white tracking-tight leading-tight drop-shadow-2xl">
+                          {item.destination}
+                        </h3>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Card Footer */}
-                  <div className="p-5 flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                      <MapPin className="w-3.5 h-3.5 text-orange-500" />
-                      Saved Destination
+                  {/* Clean Footer */}
+                  <div className="p-6 flex items-center justify-between bg-white/[0.02]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/10">
+                        <MapPin className="w-5 h-5 text-orange-500" weight="fill" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Status</span>
+                        <span className="text-xs font-bold text-foreground">Ready to Plan</span>
+                      </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                       <Link href="/dashboard/itinerary/new">
                         <Button
                           size="sm"
-                          className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl px-4 h-9 text-xs font-bold gap-1.5 shadow-sm transition-transform active:scale-95"
+                          className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl px-6 h-11 text-xs font-bold gap-2 shadow-lg shadow-orange-900/20 transition-all hover:-translate-y-0.5 active:translate-y-0"
                         >
-                          <Airplane className="w-3 h-3" />
+                          <Airplane className="w-4 h-4" weight="bold" />
                           Plan Trip
                         </Button>
                       </Link>
@@ -233,12 +239,12 @@ export default function WishlistPage() {
                         variant="ghost"
                         onClick={() => handleDelete(item.id, item.destination)}
                         disabled={deletingId === item.id}
-                        className="rounded-xl h-9 w-9 p-0 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                        className="rounded-2xl h-11 w-11 p-0 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10 transition-all"
                       >
                         {deletingId === item.id ? (
-                          <CircleNotch className="w-3.5 h-3.5 animate-spin" />
+                          <CircleNotch className="w-4 h-4 animate-spin" />
                         ) : (
-                          <Trash className="w-3.5 h-3.5" />
+                          <Trash className="w-4 h-4" weight="bold" />
                         )}
                       </Button>
                     </div>
