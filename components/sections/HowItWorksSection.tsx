@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Brain, Map, Compass, FileText } from "lucide-react";
+import TourTimelineSection from "@/components/sections/TourTimelineSection";
 
 /* ══════════════════════════════════════════════════════════
    VIBE DATA — 3 immersive travel experiences
@@ -250,7 +251,7 @@ export default function HowItWorksSection() {
   return (
     <section id="how-it-works" className="relative">
       {/* ═══════════════ INTRO PANEL ═══════════════ */}
-      <div className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-[#060606]">
+      <div className="relative w-full overflow-hidden flex items-center justify-center bg-[#060606] py-[30px] md:py-[60px]">
 
         <div className="relative z-10 text-center px-6 max-w-[800px]">
           {/* Script accent */}
@@ -258,7 +259,7 @@ export default function HowItWorksSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="text-[22px] md:text-[44px] font-bold tracking-[0.5em] text-terracotta mb-4"
+            className="text-[22px] md:text-[44px] font-bold tracking-[0.15em] text-terracotta mb-4"
             style={{ fontFamily: "var(--font-dancing), cursive" }}
           >
             Discovery
@@ -273,7 +274,7 @@ export default function HowItWorksSection() {
             className="flex items-center justify-center mb-6 md:mb-10"
           >
             <div className="h-[1px] bg-sand/15 flex-grow max-w-[120px] md:max-w-[200px] mr-4 md:mr-8" />
-            <h2 className="text-sand text-xl md:text-5xl lg:text-6xl font-serif tracking-[0.12em] uppercase shrink-0 font-thin">
+            <h2 className="text-sand text-lg md:text-5xl font-serif tracking-[0.15em] uppercase text-center shrink-0 font-thin">
               Choose your world
             </h2>
             <div className="h-[1px] bg-sand/15 flex-grow max-w-[120px] md:max-w-[200px] ml-4 md:ml-8" />
@@ -282,24 +283,8 @@ export default function HowItWorksSection() {
         </div>
       </div>
 
-      {/* ═══════════════ VIBE PANELS ═══════════════ */}
-      <div ref={containerRef} className="relative">
-
-
-        {/* Panels */}
-        {vibeData.map((vibe, idx) => (
-          <div
-            key={vibe.vibe}
-            ref={(el) => { panelRefs.current[idx] = el; }}
-          >
-            <VibePanel
-              data={vibe}
-              index={idx}
-              onInView={() => setActiveVibe(idx)}
-            />
-          </div>
-        ))}
-      </div>
+      {/* ═══════════════ TOUR TIMELINE ═══════════════ */}
+      <TourTimelineSection />
 
       {/* ═══════════════ WHAT'S INCLUDED ═══════════════ */}
       <div className="bg-[#060606] py-24 md:py-40 px-6 md:px-[8vw] relative overflow-hidden">

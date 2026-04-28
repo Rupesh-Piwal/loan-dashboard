@@ -151,7 +151,7 @@ export function FocusRail({
       <div className="flex flex-col items-center text-center mx-auto">
 
         {/* EXPLORE — smaller, wider, airy, italic, sexy tension */}
-        <div className="text-[20px] md:text-[40px] font-bold tracking-[0.6em] text-terracotta"
+        <div className="text-[20px] md:text-[40px] font-bold tracking-[0.15em] text-terracotta"
           style={{ fontFamily: 'var(--font-dancing), cursive' }}>
           Explore
         </div>

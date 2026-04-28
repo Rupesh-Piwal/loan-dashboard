@@ -86,18 +86,18 @@ export default function PricingSection() {
   };
 
   return (
-    <section id="pricing" className="bg-[#F5EFE0] py-[160px] px-6 md:px-[8vw]">
+    <section id="pricing" className="bg-[#060606] py-[160px] px-6 md:px-[8vw]">
       <div className="max-w-[1240px] mx-auto">
         <div className="text-center mb-24">
           <div
-            className="text-[20px] md:text-[40px] font-bold tracking-[0.6em] text-terracotta"
+            className="text-[20px] md:text-[40px] font-bold tracking-[0.6em] text-terracotta mb-4"
             style={{ fontFamily: "var(--font-dancing), cursive" }}
           >
-            Memberships
+            Membership
           </div>
 
-          <h2 className="font-serif font-medium text-[clamp(40px,5vw,72px)] text-navy leading-none tracking-tight">
-            Invest in your <span className="text-terracotta">discoveries.</span>
+          <h2 className="text-sand text-lg md:text-5xl font-serif tracking-[0.15em] uppercase text-center shrink-0 font-thin">
+            Invest in your discoveries
           </h2>
         </div>
 
@@ -110,11 +110,10 @@ export default function PricingSection() {
               <motion.div
                 key={tier.name}
                 whileHover={{ y: -10 }}
-                className={`p-10 rounded-[40px] flex flex-col transition-all duration-500 ${
-                  tier.featured
-                    ? "bg-navy text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)]"
-                    : "bg-sand text-navy border border-navy/5 shadow-[0_20px_60px_rgba(15,25,35,0.03)]"
-                }`}
+                className={`p-10 rounded-[40px] flex flex-col transition-all duration-500 ${tier.featured
+                  ? "bg-[#060606] text-sand shadow-[0_50px_100px_-20px_rgba(15,25,35,0.3)]"
+                  : "bg-sand text-navy border border-navy/5 shadow-[0_20px_60px_rgba(15,25,35,0.03)]"
+                  }`}
               >
                 {/* Plan Name */}
                 <div className="text-terracotta text-[12px] font-bold uppercase tracking-[0.3em] mb-4">
@@ -127,9 +126,8 @@ export default function PricingSection() {
                     ${tier.price}
                   </span>
                   <span
-                    className={`ml-2 text-[14px] font-medium ${
-                      tier.featured ? "text-sand/50" : "text-navy/40"
-                    }`}
+                    className={`ml-2 text-[14px] font-medium ${tier.featured ? "text-sand/50" : "text-navy/40"
+                      }`}
                   >
                     one-time
                   </span>
@@ -137,18 +135,16 @@ export default function PricingSection() {
 
                 {/* Credits Info */}
                 <div
-                  className={`text-[14px] mb-6 ${
-                    tier.featured ? "text-sand/60" : "text-navy/50"
-                  }`}
+                  className={`text-[14px] mb-6 ${tier.featured ? "text-sand/60" : "text-navy/50"
+                    }`}
                 >
                   {tier.credits} credits · ${pricePerCredit} per credit
                 </div>
 
                 {/* Description */}
                 <p
-                  className={`text-[15px] mb-8 ${
-                    tier.featured ? "text-sand/70" : "text-navy/60"
-                  }`}
+                  className={`text-[15px] mb-8 ${tier.featured ? "text-sand/70" : "text-navy/60"
+                    }`}
                 >
                   {tier.description}
                 </p>
@@ -161,9 +157,8 @@ export default function PricingSection() {
                     <div key={f} className="flex gap-3 items-center">
                       <Check className="w-4 h-4 text-terracotta shrink-0" />
                       <span
-                        className={`text-[14px] ${
-                          tier.featured ? "text-sand/70" : "text-navy/60"
-                        }`}
+                        className={`text-[14px] ${tier.featured ? "text-sand/70" : "text-navy/60"
+                          }`}
                       >
                         {f}
                       </span>
@@ -175,11 +170,10 @@ export default function PricingSection() {
                 <button
                   onClick={() => handleBuy(tier.key)}
                   disabled={loadingTier !== null}
-                  className={`w-full py-4 rounded-[20px] font-bold uppercase text-[13px] tracking-widest mt-auto transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed ${
-                    tier.featured
-                      ? "bg-terracotta text-sand hover:bg-terracotta/90"
-                      : "bg-navy text-sand hover:bg-navy/90"
-                  }`}
+                  className={`w-full py-4 rounded-[20px] font-bold uppercase text-[13px] tracking-widest mt-auto transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed ${tier.featured
+                    ? "bg-terracotta text-sand hover:bg-terracotta/90"
+                    : "bg-navy text-sand hover:bg-navy/90"
+                    }`}
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">

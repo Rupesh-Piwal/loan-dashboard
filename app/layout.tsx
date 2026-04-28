@@ -58,6 +58,7 @@ export const playfair = Playfair_Display({
   weight: ["400", "500", "600"],
 });
 
+
 export const metadata: Metadata = {
   title: "NomadGo",
   description: "AI-free luxury travel itineraries",

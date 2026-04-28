@@ -4,16 +4,16 @@ import { motion } from "framer-motion";
 
 export default function PdfExportSection() {
   return (
-    <section className="bg-navy py-[60px] px-6 md:px-[8vw] relative overflow-hidden">
+    <section className="bg-[#060606] py-[60px] px-6 md:px-[8vw] relative overflow-hidden">
       <div className="max-w-[1240px] mx-auto flex flex-col items-center relative z-10">
         <div className="max-w-[800px] w-full text-center mb-24">
-          <div className="text-[11px] font-sans uppercase tracking-[0.25em] text-terracotta font-bold mb-5 italic">The Export</div>
-          <h2 className="font-serif italic font-medium text-[clamp(36px,5vw,60px)] text-sand mb-8 leading-[1.05] tracking-tight">
-            A physical companion <br />for the <span className="text-terracotta">modern</span> explorer.
+          <div className="text-[20px] md:text-[40px] font-bold tracking-[0.15em] text-terracotta mb-4"
+            style={{ fontFamily: 'var(--font-dancing), cursive' }}>
+            Export
+          </div>
+          <h2 className="text-sand text-lg md:text-5xl font-serif tracking-[0.15em] uppercase text-center shrink-0 font-thin">
+            Modern Companion
           </h2>
-          <p className="font-sans text-[18px] text-sand/50 max-w-[560px] mx-auto leading-relaxed">
-            Every itinerary manifests as a bespoke digital guide—meticulously formatted for clarity, aesthetic, and portability.
-          </p>
         </div>
 
         <motion.div
