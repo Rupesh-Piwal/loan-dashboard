@@ -60,19 +60,16 @@ const Navbar = ({ user }: { user?: UserProp }) => {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? "glass border-b border-border/50 shadow-lg shadow-black/10"
+          ? "glass shadow-lg shadow-black/10"
           : isLanding
             ? "bg-transparent"
-            : "glass"
+            : "transparent"
           }`}
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between h-16 md:h-20">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Compass className="w-4 h-4 text-primary-foreground" />
-            </div>
             <span className="font-serif text-xl font-semibold text-foreground tracking-tight">
-              TravelPulse
+              NomadGo
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-8">

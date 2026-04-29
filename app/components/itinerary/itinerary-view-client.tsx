@@ -565,7 +565,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                         
                         <div className="flex items-center justify-center">
                           <div className="scale-100 transform origin-center shadow-[0_0_40px_rgba(245,158,11,0.1)] hover:shadow-[0_0_60px_rgba(245,158,11,0.2)] transition-shadow duration-700 rounded-full">
-                            <ExportPdfButton itineraryId="" />
+                            <ExportPdfButton itineraryId={itinerary.id} />
                           </div>
                         </div>
                       </motion.div>
