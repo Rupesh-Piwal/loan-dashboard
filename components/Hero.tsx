@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Calendar, Wallet, Compass, Loader2, MapPin } from "lucide-react";
 import { toast } from "sonner";
@@ -25,6 +26,7 @@ const VIBES = ["Adventure", "Foodie", "Cultural", "Relaxation"] as const;
 
 export default function Hero() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
 
   //video state
@@ -49,6 +51,14 @@ export default function Hero() {
   const handleSubmit = () => {
     if (!destination) {
       toast.error("Please enter a destination");
+      return;
+    }
+
+    if (!session) {
+      toast.error("Please log in to plan your trip", {
+        description: "Join NomadGo to save itineraries and sync across devices.",
+      });
+      router.push("/login");
       return;
     }
     if (duration < 1 || duration > 3) {

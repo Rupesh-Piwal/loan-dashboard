@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 };
 
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Providers } from "@/app/providers";
 
 export default function RootLayout({
   children,
@@ -91,10 +91,10 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col scrollbar-hide">
-        <ThemeProvider>
+        <Providers>
           {children}
           <Toaster position="top-center" richColors />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
