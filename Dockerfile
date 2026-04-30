@@ -13,15 +13,16 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Set Puppeteer environment
+# Set Puppeteer environment (but NOT NODE_ENV yet)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
-    NODE_ENV=production
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 WORKDIR /app
 
-# Install all dependencies (including devDeps for build)
+# Copy package files
 COPY package*.json ./
+
+# Install ALL dependencies (including devDependencies for the build)
 RUN npm install
 
 # Copy source code
@@ -32,6 +33,9 @@ RUN npx prisma generate
 
 # Build the app
 RUN npm run build
+
+# Now set to production
+ENV NODE_ENV=production
 
 # Start the app
 CMD ["npm", "start"]
