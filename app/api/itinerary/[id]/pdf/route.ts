@@ -62,8 +62,10 @@ export async function POST(
 
       const page = await browser.newPage();
       
-      // Pass the current user's session cookies to the headless browser
-      // so it doesn't get redirected to the login page by the middleware
+      // Set a consistent viewport for A4 rendering
+      await page.setViewport({ width: 1200, height: 1600, deviceScaleFactor: 2 });
+
+      // Pass the current user's session cookies
       const cookiesStr = req.headers.get("cookie") || "";
       if (cookiesStr) {
         const hostname = new URL(baseUrl).hostname;
@@ -80,13 +82,35 @@ export async function POST(
       }
 
       // Navigate and wait for network to be idle
-      await page.goto(targetUrl, { waitUntil: "networkidle0", timeout: 30000 });
+      console.log(`Puppeteer navigating to: ${targetUrl}`);
+      await page.goto(targetUrl, { waitUntil: ["networkidle0", "load"], timeout: 30000 });
+
+      // Check if we were redirected to login
+      const currentUrl = page.url();
+      const pageTitle = await page.title();
+      console.log(`Puppeteer currently at: ${currentUrl} (Title: ${pageTitle})`);
+
+      if (currentUrl.includes("/login")) {
+        console.error("PDF Generation failed: Redirected to login page. Session cookies might be invalid or missing.");
+        throw new Error("Authentication failed during PDF generation");
+      }
+
+      // Wait for the main heading to ensure content has loaded
+      try {
+        await page.waitForSelector('h1', { timeout: 10000 });
+      } catch (e) {
+        console.warn("Heading <h1> not found within timeout. Page content might be different than expected.");
+      }
+
+      // Small additional delay to ensure all images and fonts are rendered
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Generate the PDF
       const pdfBuffer = await page.pdf({
         format: "A4",
         printBackground: true,
-        margin: { top: "1cm", right: "1cm", bottom: "1cm", left: "1cm" }
+        margin: { top: "1cm", right: "1cm", bottom: "1cm", left: "1cm" },
+        preferCSSPageSize: true
       });
 
       await browser.close();
