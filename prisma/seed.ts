@@ -1,4 +1,4 @@
-import { PrismaClient, Vibe } from "../generated/prisma/client";
+import { PrismaClient, Vibe } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import "dotenv/config";

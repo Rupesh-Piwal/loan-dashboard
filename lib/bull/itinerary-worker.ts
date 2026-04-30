@@ -4,7 +4,7 @@ import { connection } from "./connection";
 import { prisma } from "../prisma";
 import { generateItinerary as runGenerator } from "../itinerary/generateItinerary";
 import { fetchPexelsImage } from "../pexels";
-import { ItineraryStatus } from "../../generated/prisma/client";
+import { ItineraryStatus } from "@prisma/client";
 
 export const ITINERARY_QUEUE_NAME = "itinerary-generation";
 

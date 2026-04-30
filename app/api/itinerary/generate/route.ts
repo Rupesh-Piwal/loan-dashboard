@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { initiateItineraryGeneration } from "@/lib/itinerary/service";
-import { Vibe, Budget } from "../../../../generated/prisma/client";
+import { Vibe, Budget } from "@prisma/client";
 import { getCurrentUser } from "@/lib/auth";
 
 const generateSchema = z.object({

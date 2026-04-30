@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ItineraryViewClient from "@/app/components/itinerary/itinerary-view-client";
 import GenerationLoading from "@/app/components/itinerary/generation-loading";
-import { ItineraryStatus } from "../../../../generated/prisma/client";
+import { ItineraryStatus } from "@prisma/client";
 
 interface TravelFromPrevious {
   mode: string;

@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { initiateItineraryGeneration } from "@/lib/itinerary/service";
-import { Vibe, Budget } from "../../generated/prisma/client";
+import { Vibe, Budget } from "@prisma/client";
 
 import { itinerarySchema } from "@/lib/schemas/itinerary";
 

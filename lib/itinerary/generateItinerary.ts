@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Vibe, Budget, ActivityCategory, MealType } from "../../generated/prisma/client";
+import { Vibe, Budget, ActivityCategory, MealType } from "@prisma/client";
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 import { z } from "zod";
