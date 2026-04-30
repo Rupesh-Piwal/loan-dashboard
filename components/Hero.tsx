@@ -169,18 +169,18 @@ export default function Hero() {
         transition={{ duration: 0.7, delay: 0.6 }}
         className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-40 w-[96%] max-w-[1060px] px-3 dark"
       >
-        <div className="bg-black/20 backdrop-blur-3xl border border-sand/10 rounded-[28px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-wrap md:flex-nowrap items-center p-1.5 md:p-3 relative">
+        <div className="bg-neutral-950/60 backdrop-blur-md border border-white/10 rounded-[24px] md:rounded-full shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] flex flex-wrap md:flex-nowrap items-stretch p-0 md:p-2 relative overflow-hidden md:overflow-visible">
 
           {/* Destination */}
-          <div className="w-full md:flex-[2.5] flex items-center px-4 py-2.5 md:py-3 relative group cursor-text">
-            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-sand/10 flex items-center justify-center shrink-0 mr-3">
-              <MapPin className="w-3 h-3 md:w-5 md:h-5 text-sand/70" />
+          <div className="w-full md:flex-[2] flex items-center px-4 py-4 md:pl-6 md:pr-4 md:py-5 relative group cursor-text transition-colors hover:bg-white/[0.02] rounded-t-[24px] md:rounded-none md:rounded-l-full">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-4 transition-colors group-hover:bg-white/[0.15]">
+              <MapPin className="w-5 h-5 text-white" />
             </div>
-            <div className="flex flex-col flex-1 w-full relative">
-              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-sand/40 font-bold mb-0.5">
+            <div className="flex flex-col flex-1 w-full relative min-w-0 justify-center">
+              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
                 Destination
               </span>
-              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!h-auto [&_input]:!py-1.5 [&_input]:!px-0 [&_input]:!text-sand [&_input]:!text-[18px] md:[&_input]:!text-[22px] [&_input]:!font-bold [&_input]:!placeholder:text-sand/20 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
+              <div className="hero-location-input [&_input]:!bg-transparent [&_input]:!border-none [&_input]:!shadow-none [&_input]:!outline-none [&_input]:!ring-0 [&_input]:!p-0 [&_input]:!h-auto [&_input]:!text-white [&_input]:!text-[18px] [&_input]:!font-semibold [&_input]:!placeholder:text-white/40 [&_input]:!rounded-none [&_.absolute.left-4]:!hidden [&_input]:focus:!ring-0 [&_input]:focus:!bg-transparent [&_input]:!focus-visible:ring-0 w-full relative z-20">
                 <LocationInput
                   onSelect={(loc) => {
                     const fullName = loc.isFeatured
@@ -189,22 +189,19 @@ export default function Hero() {
                     setDestination(fullName);
                   }}
                   disabled={isPending}
-                  dropdownClassName="md:w-[720px] md:-left-4"
+                  dropdownClassName="md:w-[360px] md:-left-4 bg-neutral-900 border-white/10 shadow-2xl rounded-[8px]"
                 />
               </div>
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-10 bg-sand/10 mx-2" />
-          <div className="md:hidden h-px w-full bg-sand/5 my-1" />
-
           {/* Days */}
-          <div className="w-1/2 md:flex-[0.8] flex items-center px-2 py-2 md:py-2 relative border-r border-sand/5 md:border-none">
-            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-sand/10 flex items-center justify-center shrink-0 mr-3">
-              <Calendar className="w-3 h-3 md:w-5 md:h-5 text-sand/70" />
+          <div className="w-1/2 md:flex-1 flex items-center px-4 py-4 md:px-4 md:py-5 border-t border-r border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/10 transition-colors hover:bg-white/[0.02]">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Calendar className="w-5 h-5 text-white/80" />
             </div>
-            <div className="flex flex-col flex-1">
-              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-sand/40 font-bold mb-0.5">
+            <div className="flex flex-col flex-1 min-w-0 justify-center">
+              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
                 Days
               </span>
               <div className="flex items-center">
@@ -214,31 +211,29 @@ export default function Hero() {
                   max={3}
                   value={duration}
                   onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
-                  className="bg-transparent outline-none text-sand text-[15px] md:text-[17px] font-bold w-full appearance-none placeholder:text-sand/20"
+                  className="bg-transparent border-none p-0 outline-none text-white text-[16px] font-semibold w-full appearance-none placeholder:text-white/30 focus:ring-0"
                   disabled={isPending}
                 />
               </div>
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-10 bg-sand/10 mx-2" />
-
           {/* Budget */}
-          <div className="w-1/2 md:flex-[1] flex items-center px-2 py-2 md:py-2 relative">
-            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-sand/10 flex items-center justify-center shrink-0 mr-3">
-              <Wallet className="w-3 h-3 md:w-5 md:h-5 text-sand/70" />
+          <div className="w-1/2 md:flex-1 flex items-center px-4 py-4 md:px-4 md:py-5 border-t border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/10 transition-colors hover:bg-white/[0.02]">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Wallet className="w-5 h-5 text-white/80" />
             </div>
-            <div className="flex flex-col flex-1">
-              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-sand/40 font-bold mb-0.5">
+            <div className="flex flex-col flex-1 min-w-0 justify-center">
+              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
                 Budget
               </span>
               <Select value={budget} onValueChange={(val) => val && setBudget(val)} disabled={isPending}>
-                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-sand text-[15px] md:text-[17px] font-bold focus:ring-0 flex-row-reverse justify-end gap-1.5 [&>svg]:opacity-30">
+                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
                   <SelectValue placeholder="Budget" />
                 </SelectTrigger>
-                <SelectContent className="bg-black/90 border-sand/10 shadow-2xl backdrop-blur-3xl">
+                <SelectContent className="bg-neutral-900 border-white/10 shadow-2xl text-white">
                   {BUDGETS.map((b) => (
-                    <SelectItem key={b} value={b}>
+                    <SelectItem key={b} value={b} className="focus:bg-white/10 cursor-pointer">
                       {b}
                     </SelectItem>
                   ))}
@@ -247,25 +242,22 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="hidden md:block w-px h-10 bg-sand/10 mx-2" />
-          <div className="md:hidden h-px w-full bg-sand/5 my-1" />
-
           {/* Vibe */}
-          <div className="w-1/2 md:flex-[1] flex items-center px-2 py-2 md:py-2 relative border-r border-sand/5 md:border-none">
-            <div className="w-6 h-6 md:w-10 md:h-10 rounded-full bg-sand/10 flex items-center justify-center shrink-0 mr-3">
-              <Compass className="w-3 h-3 md:w-5 md:h-5 text-sand/70" />
+          <div className="w-1/2 md:flex-1 flex items-center px-4 py-4 md:px-4 md:py-5 border-t border-r border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/10 transition-colors hover:bg-white/[0.02]">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 mr-3">
+              <Compass className="w-5 h-5 text-white/80" />
             </div>
-            <div className="flex flex-col flex-1">
-              <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-sand/40 font-bold mb-0.5">
+            <div className="flex flex-col flex-1 min-w-0 justify-center">
+              <span className="text-[11px] uppercase tracking-wider text-white/40 font-semibold mb-0.5">
                 Vibe
               </span>
               <Select value={vibe} onValueChange={(val) => val && setVibe(val)} disabled={isPending}>
-                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-sand text-[15px] md:text-[17px] font-bold focus:ring-0 flex-row-reverse justify-end gap-1.5 [&>svg]:opacity-30">
+                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
                   <SelectValue placeholder="Vibe" />
                 </SelectTrigger>
-                <SelectContent className="bg-black/90 border-sand/10 shadow-2xl backdrop-blur-3xl">
+                <SelectContent className="bg-neutral-900 border-white/10 shadow-2xl text-white">
                   {VIBES.map((v) => (
-                    <SelectItem key={v} value={v}>
+                    <SelectItem key={v} value={v} className="focus:bg-white/10 cursor-pointer">
                       {v}
                     </SelectItem>
                   ))}
@@ -275,20 +267,20 @@ export default function Hero() {
           </div>
 
           {/* CTA Button */}
-          <div className="w-1/2 md:w-auto md:ml-2">
+          <div className="w-1/2 md:w-auto flex items-center justify-center p-4 md:pl-8 md:pr-2 border-t border-white/10 md:border-none relative before:hidden md:before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[40px] before:w-[1px] before:bg-white/10">
             <button
               onClick={handleSubmit}
               disabled={isPending}
-              className="group relative overflow-hidden w-[80%] mx-auto md:w-[150px] h-[40px] md:h-[56px] rounded-xl md:rounded-full bg-gradient-to-br from-[#E67E22] to-[#C0392B] text-sand flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 shadow-[0_8px_32px_rgba(197,99,45,0.4)] disabled:opacity-70"
+              className="group relative cursor-pointer overflow-hidden w-full md:w-[160px] h-[52px] md:h-[60px] rounded-xl md:rounded-full bg-gradient-to-b from-[#E67E22] to-[#D35400] text-white flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_24px_rgba(211,84,0,0.4)] disabled:opacity-70"
             >
-              <div className="absolute inset-0 w-full h-full bg-sand/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 w-full h-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-              <span className="relative z-10 flex items-center gap-1.5 font-bold text-[13px] md:text-[14px] tracking-wide">
+              <span className="relative z-10 flex items-center gap-2 font-bold text-[16px] tracking-wide">
                 {isPending ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <span className="md:inline">Plan Trip</span>
+                    <span>Plan Trip</span>
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </>
                 )}

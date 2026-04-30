@@ -71,30 +71,41 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled, d
       return;
     }
 
+    const controller = new AbortController();
     setIsLoading(true);
     const timer = setTimeout(async () => {
       try {
-        const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
+        const res = await fetch(`/api/locations?q=${encodeURIComponent(query)}`, {
+          signal: controller.signal
+        });
+        
+        if (!res.ok) throw new Error("Search failed");
         const data = await res.json();
 
-        const results = data.features.map((f: any) => ({
-          name: f.properties.name || f.properties.city || f.properties.state,
-          city: f.properties.city,
-          country: f.properties.country,
-          lat: f.geometry.coordinates[1],
-          lng: f.geometry.coordinates[0],
-        })).filter((s: any) => s.name);
+        if (data.features) {
+          const results = data.features.map((f: any) => ({
+            name: f.properties.name || f.properties.city || f.properties.state,
+            city: f.properties.city,
+            country: f.properties.country,
+            lat: f.geometry.coordinates[1],
+            lng: f.geometry.coordinates[0],
+          })).filter((s: any) => s.name);
 
-        setSuggestions(results);
-        setIsOpen(true);
-      } catch (err) {
+          setSuggestions(results);
+          setIsOpen(true);
+        }
+      } catch (err: any) {
+        if (err.name === 'AbortError') return;
         console.error("Search failed:", err);
       } finally {
         setIsLoading(false);
       }
     }, 500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
   }, [query]);
 
   const handleSelect = (s: LocationSuggestion) => {
@@ -124,7 +135,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled, d
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsOpen(true)}
           autoComplete="off"
-          className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 focus:ring-1 focus:ring-primary/20 transition-all rounded-2xl placeholder:text-muted-foreground/50 shadow-sm"
+          className="pl-12 h-14 bg-accent/20 border-border/50 focus:bg-accent/40 focus:ring-1 focus:ring-primary/20 transition-all rounded-2xl placeholder:text-muted-foreground/50 shadow-sm placeholder:text-[18px] placeholder:font-light"
           required
           disabled={disabled}
         />
@@ -137,7 +148,7 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled, d
 
       {(showFeatured || showResults) && (
         <div className={cn(
-          "absolute top-full left-0 w-full mt-4 bg-[#0F1923]/80 border border-white/10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.7)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[2] animate-in fade-in zoom-in-95 duration-500 origin-top",
+          "absolute top-full left-0 w-full mt-4 bg-transparent border border-white/10 rounded-[8px] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.7)] z-50 overflow-hidden backdrop-blur-3xl backdrop-saturate-[2] animate-in fade-in zoom-in-95 duration-500 origin-top",
           dropdownClassName
         )}>
 
@@ -145,15 +156,15 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled, d
             <div className="py-7">
               <div className="px-8 mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-2xl bg-terracotta/20 flex items-center justify-center border border-terracotta/10">
+                  <div className="w-6 h-6 rounded-2xl bg-terracotta/20 flex items-center justify-center border border-terracotta/10">
                     <Compass size={24} weight="light" className="text-terracotta" />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[12px] font-bold uppercase tracking-[0.25em] text-white/90">
-                      Curated Destinations
+                      Destinations
                     </span>
                     <span className="text-[10px] text-white/30 uppercase tracking-[0.1em] font-medium mt-0.5">
-                      Handpicked for your next adventure
+                      Explore a city
                     </span>
                   </div>
                 </div>
@@ -165,21 +176,21 @@ export default function LocationInput({ defaultValue = "", onSelect, disabled, d
                   <button
                     key={`featured-${i}`}
                     type="button"
-                    className="flex-shrink-0 w-[30px] group/card text-left outline-none"
+                    className="flex-shrink-0 w-[58px] group/card text-left outline-none"
                     onClick={() => handleSelect(s)}
                   >
-                    <div className="relative w-full aspect-[3/4] rounded-[2rem] overflow-hidden mb-3 shadow-2xl border border-white/5 transition-all duration-700 group-hover/card:scale-[1.02] group-hover/card:-translate-y-1">
+                    <div className="relative w-full aspect-[3/4] rounded-[8px] overflow-hidden mb-3 shadow-2xl border border-white/5 transition-all duration-700 group-hover/card:scale-[1.02] group-hover/card:-translate-y-1">
                       <img
                         src={s.image}
                         alt={s.name}
                         className="w-full h-full object-cover grayscale-[0.3] group-hover/card:grayscale-0 transition-all duration-700 group-hover/card:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover/card:opacity-60 transition-opacity" />
-                      <div className="absolute bottom-5 left-5 right-5">
-                        <p className="text-white font-bold text-lg tracking-tight leading-tight">{s.name}</p>
+                      <div className="absolute bottom-2 left-2 right-2">
+                        <p className="text-white font-bold text-[10px] tracking-tight leading-tight">{s.name}</p>
                         <div className="flex items-center gap-1.5 mt-1.5">
-                          <div className="w-1 h-1 rounded-full bg-terracotta" />
-                          <p className="text-white/50 text-[10px] uppercase font-black tracking-widest">{s.country}</p>
+
+                          <p className="text-white/50 text-[6px] uppercase font-black tracking-widest">{s.country}</p>
                         </div>
                       </div>
                     </div>
