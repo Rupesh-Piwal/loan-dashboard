@@ -49,9 +49,21 @@ export async function POST(
       if (process.env.NODE_ENV === "development") {
         // Local environment: use standard puppeteer
         const puppeteer = require("puppeteer");
-        browser = await puppeteer.launch({ headless: true });
+        browser = await puppeteer.launch({ 
+          headless: true,
+          args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+      } else if (process.env.RAILWAY_ENVIRONMENT || process.env.PUPPETEER_EXECUTABLE_PATH) {
+        // Railway / Docker environment: use system-installed Chromium
+        console.log("Launching Puppeteer on Railway using:", process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium");
+        browser = await puppeteerCore.launch({
+          executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+          args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+          defaultViewport: { width: 1280, height: 720 },
+          headless: true,
+        });
       } else {
-        // Production: use sparticuz + puppeteer-core
+        // Vercel / Serverless environment: use sparticuz + puppeteer-core
         browser = await puppeteerCore.launch({
           args: chromium.args,
           defaultViewport: { width: 1280, height: 720 },
@@ -61,7 +73,7 @@ export async function POST(
       }
 
       const page = await browser.newPage();
-      
+
       // Set a consistent viewport for A4 rendering
       await page.setViewport({ width: 1200, height: 1600, deviceScaleFactor: 2 });
 
@@ -122,7 +134,7 @@ export async function POST(
           "Content-Disposition": `attachment; filename="NomadGo-Itinerary-${itineraryId}.pdf"`,
         },
       });
-      
+
     } catch (error) {
       if (browser) await browser.close();
       console.error("Puppeteer Error:", error);
