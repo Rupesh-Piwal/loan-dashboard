@@ -8,7 +8,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "worker": "tsx --env-file=.env lib/bull/itinerary-worker.ts"
+    "worker": "tsx lib/bull/itinerary-worker.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.62",
