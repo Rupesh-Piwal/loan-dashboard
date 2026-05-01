@@ -42,6 +42,12 @@ const worker = new Worker(
         budget: itinerary.budget,
       });
 
+      // ⭐ INCREMENTAL UPDATE 1: Save the structure
+      await prisma.itinerary.update({
+        where: { id: itineraryId },
+        data: { data: generatedData as any },
+      });
+
       // 3. IMAGE ENRICHMENT
       console.log(`📸 Starting Image Enrichment...`);
       try {
@@ -62,6 +68,12 @@ const worker = new Worker(
           },
         });
 
+        // ⭐ INCREMENTAL UPDATE 2: Save hero image
+        await prisma.itinerary.update({
+          where: { id: itineraryId },
+          data: { data: generatedData as any },
+        });
+
         // Activity images with concurrency limiting (max 5 at a time)
         await Promise.all(
           generatedData.days.flatMap((day: any) =>
@@ -71,7 +83,7 @@ const worker = new Worker(
                   // SMARTER SEARCH: If it's a meal/restaurant, search for the cuisine/vibe 
                   // instead of the specific name which Unsplash won't have.
                   let searchQuery = `${activity.title} ${itinerary.destination}`;
-                  
+
                   if (activity.category === "RESTAURANT" || activity.mealType !== "NONE") {
                     const cuisine = (activity as any).cuisine || "";
                     searchQuery = `${cuisine} food restaurant ${itinerary.destination}`;
@@ -83,6 +95,15 @@ const worker = new Worker(
                     "square",
                     itinerary.destination
                   );
+
+                  // ⭐ INCREMENTAL UPDATE 3: Save activity image
+                  await prisma.itinerary.update({
+                    where: { id: itineraryId },
+                    data: { data: generatedData as any },
+                  });
+
+                  // Add a small delay to "drip-feed" the UI updates
+                  await new Promise(resolve => setTimeout(resolve, 800));
                 }
               })
             )
@@ -102,21 +123,15 @@ const worker = new Worker(
         },
       });
 
-      // 5. PUBLISH SUCCESS TO REDIS PUB/SUB
-      await connection.publish(`itinerary:status:${itineraryId}`, JSON.stringify({ status: "DONE" }));
-      
       console.log(`✅ Itinerary ${itineraryId} complete!`);
     } catch (error: any) {
       console.error(`❌ Job ${job.id} failed:`, error);
-      
+
       await prisma.itinerary.update({
         where: { id: itineraryId },
         data: { status: ItineraryStatus.FAILED },
       });
 
-      // Publish failure
-      await connection.publish(`itinerary:status:${itineraryId}`, JSON.stringify({ status: "FAILED", error: error.message }));
-      
       throw error;
     }
   },

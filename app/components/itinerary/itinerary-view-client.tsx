@@ -461,15 +461,7 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
               className="w-24 h-[1.5px] bg-gradient-to-r from-amber-400 to-transparent mb-5 origin-left md:origin-right md:bg-gradient-to-l"
             />
 
-            <motion.p
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.75, duration: 0.9 }}
-              className="text-amber-400/90 italic text-2xl md:text-5xl lg:text-6xl tracking-wide font-light lowercase"
-              style={{ fontFamily: 'var(--font-euphoria)' }}
-            >
-              {itinerary.vibe}
-            </motion.p>
+
           </div>
         </div>
 
@@ -525,18 +517,18 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
 
                 return (
                   <div key={`${activity.dayNumber}-${index}`} data-activity-lat={activity.lat} data-activity-lng={activity.lng} id={`day-${activity.dayNumber}`}>
-                    
+
                     {isFirstActivityOfDay && dayData && (
-                      <DayOpener 
+                      <DayOpener
                         dayInfo={{ dayTitle: dayData.title, dayNumber: dayData.day, summary: dayData.summary }}
                         image={activity.image}
                       />
                     )}
 
-                    <EditorialActivityScene 
-                      activity={activity} 
-                      index={index} 
-                      onInView={setActiveActivityIndex} 
+                    <EditorialActivityScene
+                      activity={activity}
+                      index={index}
+                      onInView={setActiveActivityIndex}
                       align={align}
                       isLast={isLast}
                     />
@@ -550,19 +542,19 @@ export default function ItineraryViewClient({ itinerary, data, heroImage }: Itin
                         className="mt-32 pt-32 pb-16 flex flex-col items-center text-center relative"
                       >
                         <div className="w-px h-24 bg-gradient-to-b from-white/10 to-transparent absolute top-0 left-1/2 -translate-x-1/2" />
-                        
+
                         <span className="text-[12px] font-black uppercase tracking-[0.4em] text-orange-400 mb-6">
                           Epilogue
                         </span>
-                        
+
                         <h3 className="text-5xl md:text-7xl font-serif text-white leading-[1.1] tracking-tight mb-6">
                           Your story is<br />ready to begin.
                         </h3>
-                        
+
                         <p className="text-zinc-400 text-lg font-light leading-relaxed max-w-md mx-auto mb-10">
                           Download this curated experience for offline access. Every moment has been carefully crafted.
                         </p>
-                        
+
                         <div className="flex items-center justify-center">
                           <div className="scale-100 transform origin-center shadow-[0_0_40px_rgba(245,158,11,0.1)] hover:shadow-[0_0_60px_rgba(245,158,11,0.2)] transition-shadow duration-700 rounded-full">
                             <ExportPdfButton itineraryId={itinerary.id} />
