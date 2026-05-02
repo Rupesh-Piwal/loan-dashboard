@@ -116,7 +116,7 @@ export default function PricingSection() {
                   }`}
               >
                 {/* Plan Name */}
-                <div className="text-terracotta text-[12px] font-bold uppercase tracking-[0.3em] mb-4">
+                <div className="text-[#A33B00] text-[12px] font-bold uppercase tracking-[0.3em] mb-4">
                   {tier.name}
                 </div>
 
@@ -126,7 +126,7 @@ export default function PricingSection() {
                     ${tier.price}
                   </span>
                   <span
-                    className={`ml-2 text-[14px] font-medium ${tier.featured ? "text-sand/50" : "text-navy/40"
+                    className={`ml-2 text-[14px] font-medium ${tier.featured ? "text-sand/70" : "text-navy/70"
                       }`}
                   >
                     one-time
@@ -135,7 +135,7 @@ export default function PricingSection() {
 
                 {/* Credits Info */}
                 <div
-                  className={`text-[14px] mb-6 ${tier.featured ? "text-sand/60" : "text-navy/50"
+                  className={`text-[14px] mb-6 ${tier.featured ? "text-sand/80" : "text-navy/70"
                     }`}
                 >
                   {tier.credits} credits · ${pricePerCredit} per credit
@@ -143,7 +143,7 @@ export default function PricingSection() {
 
                 {/* Description */}
                 <p
-                  className={`text-[15px] mb-8 ${tier.featured ? "text-sand/70" : "text-navy/60"
+                  className={`text-[15px] mb-8 ${tier.featured ? "text-sand/90" : "text-navy/80"
                     }`}
                 >
                   {tier.description}
@@ -157,7 +157,7 @@ export default function PricingSection() {
                     <div key={f} className="flex gap-3 items-center">
                       <Check className="w-4 h-4 text-terracotta shrink-0" />
                       <span
-                        className={`text-[14px] ${tier.featured ? "text-sand/70" : "text-navy/60"
+                        className={`text-[14px] ${tier.featured ? "text-sand/90" : "text-navy/80"
                           }`}
                       >
                         {f}

@@ -1,4 +1,3 @@
-"use client";
 
 import Hero from "@/components/Hero";
 import ExploreSection from "@/components/sections/ExploreSection";

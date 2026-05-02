@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -99,17 +100,28 @@ export default function Hero() {
 
       {/* ════ FULL-SCREEN BACKGROUND IMAGES ════ */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {/* 🔹 Fallback image (instant render) */}
+        {/* 🔹 Fallback image (instant render, priority for LCP) */}
         <AnimatePresence>
-          <motion.img
-            src={HERO_IMAGE_URL}
-            alt="Travel destination"
-            initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: videoLoaded ? 0 : 1, scale: 1.02 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.8, ease: [0.25, 0.8, 0.25, 1] }}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          {!videoLoaded && (
+            <motion.div
+              key="hero-fallback"
+              initial={{ opacity: 1, scale: 1.06 }}
+              animate={{ opacity: 1, scale: 1.02 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.8, ease: [0.25, 0.8, 0.25, 1] }}
+              className="absolute inset-0 w-full h-full z-10"
+            >
+              <Image
+                src={HERO_IMAGE_URL}
+                alt="Travel destination"
+                fill
+                priority
+                className="object-cover"
+                sizes="100vw"
+                quality={85}
+              />
+            </motion.div>
+          )}
         </AnimatePresence>
 
         {/* 🔹 Video layer (Cloudinary optimized) */}
@@ -124,7 +136,7 @@ export default function Hero() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             poster={HERO_IMAGE_URL}
             onLoadedData={() => setVideoLoaded(true)}
             onCanPlay={() => setVideoLoaded(true)}
@@ -156,11 +168,9 @@ export default function Hero() {
 
       {/* ════ HERO CONTENT ════ */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 pb-40 md:pb-48">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="max-w-4xl"
+        <div
+          className="max-w-4xl animate-fade-in-up"
+          style={{ animationDelay: '0.2s' }}
         >
           <h1 className="text-[62px] md:text-[100px] font-normal tracking-tight text-sand font-[family-name:var(--font-serif)] italic leading-[0.95] mb-10">
             Plan your <br />
@@ -169,7 +179,7 @@ export default function Hero() {
           <p className="font-bricolage text-[clamp(15px,1.1vw,18px)] text-sand/70 max-w-[500px] mx-auto leading-relaxed tracking-wide font-light ">
             AI-powered luxury itineraries tailored to your vibe. Get curated guides, maps, and photos in seconds.
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* ════ CTA SEARCH BAR — anchored at bottom ════ */}
@@ -223,6 +233,7 @@ export default function Hero() {
                   onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
                   className="bg-transparent border-none p-0 outline-none text-white text-[16px] font-semibold w-full appearance-none placeholder:text-white/30 focus:ring-0"
                   disabled={isPending}
+                  aria-label="Trip duration in days"
                 />
               </div>
             </div>
@@ -238,7 +249,7 @@ export default function Hero() {
                 Budget
               </span>
               <Select value={budget} onValueChange={(val) => val && setBudget(val)} disabled={isPending}>
-                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
+                <SelectTrigger aria-label="Select budget" className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
                   <SelectValue placeholder="Budget" />
                 </SelectTrigger>
                 <SelectContent className="bg-neutral-900 border-white/10 shadow-2xl text-white">
@@ -262,7 +273,7 @@ export default function Hero() {
                 Vibe
               </span>
               <Select value={vibe} onValueChange={(val) => val && setVibe(val)} disabled={isPending}>
-                <SelectTrigger className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
+                <SelectTrigger aria-label="Select vibe" className="bg-transparent border-none shadow-none p-0 h-auto text-white text-[16px] font-semibold focus:ring-0 justify-between gap-2 [&>svg]:opacity-50 [&>svg]:w-4 [&>svg]:h-4">
                   <SelectValue placeholder="Vibe" />
                 </SelectTrigger>
                 <SelectContent className="bg-neutral-900 border-white/10 shadow-2xl text-white">

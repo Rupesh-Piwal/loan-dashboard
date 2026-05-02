@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function PdfExportSection() {
   return (
@@ -32,7 +33,15 @@ export default function PdfExportSection() {
 
             <div className="flex flex-1 gap-12 overflow-hidden">
               <div className="flex-1 flex flex-col gap-8">
-                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop" className="w-full aspect-[4/3] object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700" alt="Kyoto" />
+                <div className="relative w-full aspect-[4/3] rounded-sm overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    className="object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"
+                    alt="Kyoto"
+                  />
+                </div>
                 <div className="flex flex-col gap-3">
                   <div className="h-[2px] bg-navy/20 w-full" />
                   <div className="h-[2px] bg-navy/20 w-[80%]" />
@@ -42,7 +51,7 @@ export default function PdfExportSection() {
               </div>
               <div className="flex-1 flex flex-col gap-10 pt-10">
                 <div className="flex flex-col gap-2">
-                  <h4 className="font-serif text-terracotta text-[24px] uppercase tracking-widest font-bold">DAY 01</h4>
+                  <h3 className="font-serif text-terracotta text-[24px] uppercase tracking-widest font-bold">DAY 01</h3>
                   <span className="font-sans text-navy/40 text-[12px] font-bold tracking-[0.2em] uppercase">Arrival & Immersion</span>
                 </div>
                 <div className="flex flex-col gap-6">

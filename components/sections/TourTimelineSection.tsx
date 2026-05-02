@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 const TOUR_TEXT_TOP =
   "We've planned a seamless multi-destination itinerary tailored to your preferences. Here's a sample 10-day journey visiting three iconic cities:";
@@ -55,10 +56,10 @@ function PhotoStack({ photos, delay = 0 }: { photos: PhotoItem[]; delay?: number
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ delay, duration: 0.6, ease: "easeOut" }}
-        className="w-28 h-[84px] flex-shrink-0 rounded-[10px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.65)] border border-white/10"
+        className="relative w-28 h-[84px] flex-shrink-0 rounded-[10px] overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.65)] border border-white/10"
         style={{ rotate: photos[0].rotate }}
       >
-        <img src={photos[0].src} alt={photos[0].alt} className="w-full h-full object-cover" />
+        <Image src={photos[0].src} alt={photos[0].alt} fill sizes="112px" className="object-cover" />
       </motion.div>
     );
   }
@@ -80,7 +81,7 @@ function PhotoStack({ photos, delay = 0 }: { photos: PhotoItem[]; delay?: number
             rotate: photo.rotate,
           }}
         >
-          <img src={photo.src} alt={photo.alt} className="w-full h-full object-cover" />
+          <Image src={photo.src} alt={photo.alt} fill sizes="112px" className="object-cover" />
         </motion.div>
       ))}
     </div>
@@ -222,12 +223,14 @@ export default function TourTimelineSection() {
                         {[...stop.leftPhotos, ...stop.rightPhotos].slice(0, 3).map((photo, j) => (
                           <div
                             key={j}
-                            className="w-[88px] h-[66px] rounded-[8px] overflow-hidden shadow-lg border border-white/10 flex-shrink-0"
+                            className="relative w-[88px] h-[66px] rounded-[8px] overflow-hidden shadow-lg border border-white/10 flex-shrink-0"
                           >
-                            <img
+                            <Image
                               src={photo.src}
                               alt={photo.alt}
-                              className="w-full h-full object-cover"
+                              fill
+                              sizes="88px"
+                              className="object-cover"
                             />
                           </div>
                         ))}
