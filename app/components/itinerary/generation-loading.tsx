@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkle, MapTrifold, Camera, ForkKnife, Airplane, Globe, Image as ImageIcon } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
@@ -112,7 +113,14 @@ export default function GenerationLoading({ itineraryId }: { itineraryId: string
                   }}
                   className={`${colSpan} aspect-[4/3] rounded-[2rem] overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl relative`}
                 >
-                  <img src={src} alt="Trip preview" className="w-full h-full object-cover" />
+                  <Image 
+                    src={src} 
+                    alt="Trip preview" 
+                    fill
+                    className="object-cover" 
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    priority={idx < 2}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/40 to-transparent" />
                 </motion.div>
               );

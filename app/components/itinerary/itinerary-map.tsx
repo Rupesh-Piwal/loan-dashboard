@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import Image from "next/image";
 import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as L from "leaflet";
@@ -116,18 +117,24 @@ export default function ItineraryMap({
 
   if (!mounted) return <div className="h-full w-full bg-accent/20 animate-pulse rounded-3xl" />;
 
-  // If flatActivities is provided, use it, otherwise fall back to generating it from days
-  const validActivities = (flatActivities.length > 0 ? flatActivities : days.flatMap((day) =>
-    (day.activities || []).map((activity) => ({ ...activity, dayNumber: day.day }))
-  )).filter((a) => isValidCoord(a.lat) && isValidCoord(a.lng));
+  // Memoize valid activities to prevent re-filtering on every render
+  const validActivities = useMemo(() => {
+    const list = (flatActivities.length > 0 ? flatActivities : days.flatMap((day) =>
+      (day.activities || []).map((activity) => ({ ...activity, dayNumber: day.day }))
+    ));
+    return list.filter((a) => isValidCoord(a.lat) && isValidCoord(a.lng));
+  }, [days, flatActivities]);
 
-  const coords = validActivities.map((a) => [Number(a.lat), Number(a.lng)] as [number, number]);
-  const bounds = coords.length > 0 ? L.latLngBounds(coords) : null;
-
-  const defaultCenter: [number, number] =
-    validActivities.length > 0 && isValidCoord(validActivities[0].lat) && isValidCoord(validActivities[0].lng)
-      ? [Number(validActivities[0].lat), Number(validActivities[0].lng)]
-      : [48.8566, 2.3522];
+  // Memoize bounds and center to prevent map flickering
+  const { bounds, defaultCenter } = useMemo(() => {
+    const coords = validActivities.map((a) => [Number(a.lat), Number(a.lng)] as [number, number]);
+    return {
+      bounds: coords.length > 0 ? L.latLngBounds(coords) : null,
+      defaultCenter: validActivities.length > 0
+        ? [Number(validActivities[0].lat), Number(validActivities[0].lng)] as [number, number]
+        : [48.8566, 2.3522] as [number, number]
+    };
+  }, [validActivities]);
 
   return (
     <div className="w-full h-full rounded-2xl lg:rounded-none overflow-hidden relative lg:border-none">
@@ -157,11 +164,13 @@ export default function ItineraryMap({
               <Popup className="premium-popup">
                 <div className="p-1 min-w-[200px]">
                   {activity.image && (
-                    <div className="w-full h-24 rounded-lg overflow-hidden mb-3">
-                      <img
+                    <div className="w-full h-24 rounded-lg overflow-hidden mb-3 relative">
+                      <Image
                         src={activity.image}
                         alt={activity.title}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        sizes="200px"
                       />
                     </div>
                   )}
